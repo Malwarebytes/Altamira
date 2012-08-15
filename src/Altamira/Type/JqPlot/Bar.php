@@ -1,15 +1,9 @@
 <?php
 
-namespace Altamira\Type;
+namespace Altamira\Type\JqPlot;
 
-class Bar extends TypeAbstract
+class Bar extends \Altamira\Type\TypeAbstract
 {
-
-	protected $pluginFiles = array('jqplot.categoryAxisRenderer.min.js', 'jqplot.barRenderer.min.js');
-	protected $renderer = '$.jqplot.BarRenderer';
-	protected $axisRenderer = '$.jqplot.CategoryAxisRenderer';
-
-	protected $allowedOptions = array('varyBarColor', 'barWidth', 'barPadding', 'barMargin', 'waterfall', 'stackSeries');
 
 	public function getOptions()
 	{
@@ -17,8 +11,9 @@ class Bar extends TypeAbstract
 
 		$first = array();
 		$second = array();
-
-		$first['renderer'] = '#' . $this->axisRenderer . '#';
+        if ($this->axisRenderer) {
+		    $first['renderer'] = '#' . $this->axisRenderer . '#';
+        }
 		if(isset($this->options['ticks']))
 			$first['ticks'] = $this->options['ticks'];
 

@@ -2,6 +2,8 @@
 
 namespace Altamira;
 
+use Altamira\JsWriter\JsWriterAbstract;
+
 class Series
 {
 	static protected $count = 0;
@@ -10,13 +12,13 @@ class Series
 	protected $useTags = false;
 	protected $useLabels = false;
 
+	protected $jsWriter;
+	
 	protected $title;
 	protected $labels= array();
-	protected $options = array();
 	protected $files = array();
-	protected $allowedOptions = array('lineWidth', 'showLine', 'showMarker', 'markerStyle', 'markerSize');
 
-	public function __construct($data, $title = null)
+	public function __construct($data, $title = null, JsWriterAbstract $jsWriter)
 	{
 		self::$count++;
 
@@ -42,6 +44,9 @@ class Series
 		} else {
 			$this->title = 'Series ' . self::$count;
 		}
+
+		$this->jsWriter = $jsWriter;
+		$this->jsWriter->initializeSeries($this);
 	}
 
 	public function getFiles()
@@ -54,45 +59,41 @@ class Series
 		$num = $start;
 		$this->tags = array();
 
-		foreach($data as $item) {
+		foreach($this->data as $item) {
 			$this->tags[] = $num;
 			$num += $step;
 		}
 	}
 
-	public function setShadow($use = true, $angle = 45, $offset = 1.25, $depth = 3, $alpha = 0.1)
+	public function setShadow($opts = array('use'=>true, 
+                                            'angle'=>45, 
+                                            'offset'=>1.25, 
+                                            'depth'=>3, 
+                                            'alpha'=>0.1))
 	{
-		$this->options['shadow'] = $use;
-		$this->options['shadowAngle'] = $angle;
-		$this->options['shadowOffset'] = $offset;
-		$this->options['shadowDepth'] = $depth;
-		$this->options['shadowAlpha'] = $alpha;
-
+	    if ( $this->jsWriter instanceOf \Altamira\JsWriter\Ability\Shadowable ) {
+	        $this->jsWriter->setShadow($this->getTitle(), $opts);
+	    }
+	    
 		return $this;
 	}
 
-	public function setFill($use = true, $stroke = false, $color = null, $alpha = null)
+	public function setFill($opts = array('use' => true, 
+                                                   'stroke' => false, 
+                                                   'color' => null, 
+                                                   'alpha' => null
+                                                  ))
 	{
-		$this->options['fill'] = $use;
-		$this->options['fillAndStroke'] = $stroke;
-		if(isset($color))
-			$this->options['fillColor'] = $color;
-		if(isset($alpha))
-			$this->options['fillAlpha'] = $alpha;
-
+        if ( $this->jsWriter instanceOf \Altamira\JsWriter\Ability\Fillable ) {
+    	    $this->jsWriter->setFill($this->getTitle(), $opts);
+        }
+	    
 		return $this;
 	}
 
 	public function getData($tags = false)
 	{
 		if($tags || $this->useTags) {
-			$labels = $this->labels;
-			if($this->useLabels && (count($labels) > 0)) {
-				$useLabels = true;
-			} else {
-				$useLabels = false;
-			}
-
 			$data = array();
 			$tags = $this->tags;
 			foreach($this->data as $datum) {
@@ -102,14 +103,7 @@ class Series
 				} else {
 					$item = array($datum, array_shift($tags));
 				}
-				if($useLabels) {
-					if(count($labels) === 0) {
-						$item[] = null;
-					} else {
-						$item[] = array_shift($labels);
-					}
-				}
-
+				
 				$data[] = $item;
 			}
 			return $data;
@@ -127,23 +121,23 @@ class Series
 
 	public function useLabels($labels = array())
 	{
-		$this->useTags = true;
-		$this->useLabels = true;
-		$this->options['pointLabels'] = array('show' => true, 'edgeTolerance' => 3);
-		$this->files[] = 'jqplot.pointLabels.min.js';
-		$this->labels = $labels;
+	    if ($this->jsWriter instanceOf \Altamira\JsWriter\Ability\Labelable) {
+    		$this->useTags = true;
+    		$this->useLabels = true;
+    		$this->jsWriter->useSeriesLabels($this, $labels);
+            $this->jsWriter->setSeriesOption($this, 'pointLabels', array('show' => true, 'edgeTolerance' => 3));
+	    }
 
 		return $this;
 	}
 
+	// @todo this logic should probably be in the jswriter
 	public function setLabelSetting($name, $value)
 	{
-		if($name === 'location' && in_array($value, array('n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw'))) {
-			$this->options['pointLabels']['location'] = $value;
-		} elseif(in_array($name, array('xpadding', 'ypadding', 'edgeTolerance', 'stackValue'))) {
-			$this->options['pointLabels'][$name] = $value;
-		}
-
+	    if ($this->jsWriter instanceOf \Altamira\JsWriter\Ability\Labelable) {
+    		$this->jsWriter->setSeriesLabelSetting($this, $name, $value);
+	    }
+		
 		return $this;
 	}
 
@@ -154,32 +148,75 @@ class Series
 
 	public function setOption($name, $value)
 	{
-		if(in_array($name, $this->allowedOptions))
-			$this->options[$name] = $value;
+		$this->jsWriter->setSeriesOption($this, $name, $value);
 
 		return $this;
+	}
+	
+	public function getOption($option)
+	{
+	    return $this->jsWriter->getSeriesOption($this->getTitle(), $option);
 	}
 
 	public function getOptions()
 	{
-		$opts = $this->options;
-
-		if(isset($this->useLabels) && $this->useLabels)
-			$this->options['pointLabels']['show'] = true;
-
-		$markerOptions = array();
-		if(isset($this->options['markerStyle'])) {
-			$markerOptions['style'] = $this->options['markerStyle'];
-			unset($opts['markerStyle']);
-		}
-		if(isset($this->options['markerSize'])) {
-			$markerOptions['size'] = $this->options['markerSize'];
-			unset($opts['markerSize']);
-		}
-
-		if(count($markerOptions) != 0)
-			$opts['markerOptions'] = $markerOptions;
-
-		return $opts;
+        return $this->jsWriter->getOptionsForSeries($this->getTitle());
+	}
+	
+	public function usesLabels()
+	{
+	    return isset($this->useLabels) && $this->useLabels === true;
+	}
+	
+	public function getUseTags()
+	{
+	    return $this->useTags;
+	}
+	
+	public function setLineWidth($val)
+	{
+	    if ($this->jsWriter instanceOf \Altamira\JsWriter\Ability\Lineable ) {
+	        $this->jsWriter->setSeriesLineWidth($this, $val);
+	    }
+	    return $this;
+	}
+	
+	public function showLine($bool = true)
+	{
+	    if ($this->jsWriter instanceOf \Altamira\JsWriter\Ability\Lineable ) {
+    	    $this->jsWriter->setSeriesShowLine($this, $bool);
+	    }
+	    return $this;
+	}
+	
+	public function showMarker($bool = true)
+	{
+	    if ($this->jsWriter instanceOf \Altamira\JsWriter\Ability\Lineable ) {
+	        $this->jsWriter->setSeriesShowMarker($this, $bool);
+	    }
+	    return $this;
+	}
+	
+	public function setMarkerStyle($value)
+	{
+	    if ($this->jsWriter instanceOf \Altamira\JsWriter\Ability\Lineable ) {
+	        $this->jsWriter->setSeriesMarkerStyle($this, $value);
+	    }
+	    return $this;
+	}
+	
+	public function setMarkerSize($value)
+	{
+	    if ($this->jsWriter instanceOf \Altamira\JsWriter\Ability\Lineable ) {
+	        $this->jsWriter->setSeriesMarkerSize($this, $value);
+	    }
+	    return $this;
+	}
+	
+	public function setType($type)
+	{
+	    $this->jsWriter->setType($type, $this);
+	    
+	    return $this;
 	}
 }

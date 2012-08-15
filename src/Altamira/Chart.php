@@ -2,6 +2,8 @@
 
 namespace Altamira;
 
+use Altamira\JsWriter\JqPlot;
+
 class Chart
 {
 	protected $name;
@@ -9,6 +11,8 @@ class Chart
 
 	protected $useTags = false;
 	protected $types = array();
+	
+	// @todo chart shouldn't even have options -- put it all in jswriter
 	protected $options = array(	'seriesDefaults' => array('pointLabels' => array('show' => false)),
 					'highlighter' => array('show' => false),
 					'cursor' => array('showTooltip' => false, 'show' => false)
@@ -16,15 +20,31 @@ class Chart
 	protected $series = array();
 	protected $labels = array();
 	protected $files = array();
+	
+	protected $jsWriter;
+	
+	protected $library;
 
 	protected $typeNamespace = '\\Altamira\\Type\\';
 
-	public function __construct($name = null)
+	public function __construct($name = null, $library = 'jqPlot')
 	{
-		if(isset($name))
+		if(isset($name)) {
 			$this->name = $name;
+		}
+		
+		$this->library = $library;
+		$this->typeNamespace .= ucfirst($library) . '\\';
 
+		// initialize
+		$this->getJsWriter();
+		
 		return $this;
+	}
+	
+	public function getName()
+	{
+	    return $this->name;
 	}
 
 	public function setTitle($title)
@@ -33,65 +53,57 @@ class Chart
 
 		return $this;
 	}
-
-	public function useHighlighting($size = 7.5)
+	
+	public function getTitle()
 	{
-		$this->files = array_merge_recursive(array('jqplot.highlighter.min.js'), $this->files);
-		$this->options['highlighter'] = array('sizeAdjust' => $size);
+	    return isset($this->options['title']) ? $this->options['title'] : $this->name;
+	}
+	
+	public function getUseTags()
+	{
+	    return $this->useTags;
+	}
+
+	public function useHighlighting(array $opts = array('size'=>7.5))
+	{
+	    $this->jsWriter->useHighlighting($opts);
 
 		return $this;
 	}
 
 	public function useZooming()
 	{
-		$this->files = array_merge_recursive(array('jqplot.cursor.min.js'), $this->files);
-		$this->options['cursor'] = array('zoom' => true, 'show' => true);
-
+	    $this->jsWriter->useZooming();
+	    
 		return $this;
 	}
 
 	public function useCursor()
 	{
-		$this->files = array_merge_recursive(array('jqplot.cursor.min.js'), $this->files);
-		$this->options['cursor'] = array('show' => true, 'showTooltip' => true);
-
-		return $this;
+	    if (! $this->jsWriter instanceOf \AltaMira\JsWriter\Ability\Cursorable ) {
+            throw new \BadMethodCallException("JsWriter cannot use cursor");
+	    }
+	    
+	    $this->jsWriter->useCursor();
 	}
 
 	public function useDates($axis = 'x')
 	{
-		$this->files = array_merge_recursive(array('jqplot.dateAxisRenderer.min.js'), $this->files);
-		if(strtolower($axis) === 'x') {
-			$this->options['axes']['xaxis']['renderer'] = '#$.jqplot.DateAxisRenderer#';
-		} elseif(strtolower($axis) === 'y') {
-			$this->options['axes']['yaxis']['renderer'] = '#$.jqplot.DateAxisRenderer#';
-		}
+		$this->jsWriter->useDates($axis);
 
 		return $this;
 	}
 
 	public function setAxisTicks($axis, $ticks)
 	{
-		if(strtolower($axis) === 'x') {
-			$this->options['axes']['xaxis']['ticks'] = $ticks;
-		} elseif(strtolower($axis) === 'y') {
-			$this->options['axes']['yaxis']['ticks'] = $ticks;
-		}
+	    $this->jsWriter->setAxisTicks($axis, $ticks);
 
 		return $this;
 	}
 
 	public function setAxisOptions($axis, $name, $value)
 	{
-		if(strtolower($axis) === 'x' || strtolower($axis) === 'y') {
-			$axis = strtolower($axis) . 'axis';
-
-			if (in_array($name, array('min', 'max', 'numberTicks', 'tickInterval', 'numberTicks'))) {
-				$this->options['axes'][$axis][$name] = $value;
-			} elseif(in_array($name, array('showGridline', 'formatString'))) {
-				$this->options['axes'][$axis]['tickOptions'][$name] = $value;
-			}
-		}
+		$this->jsWriter->setAxisOptions($axis, $name, $value);
 
 		return $this;
 	}
@@ -116,31 +128,15 @@ class Chart
 
 	public function setType($type, $series = null)
 	{
-		if(isset($series) && isset($this->series[$series])) {
-			$series = $this->series[$series];
-			$title = $series->getTitle();
-		} else {
-			$title = 'default';
-		}
-
-		$className =  $this->typeNamespace . ucwords($type);
-		if(class_exists($className))
-			$this->types[$title] = new $className();
+	    $this->jsWriter->setType($type, $series);
 
 		return $this;
 	}
 
 	public function setTypeOption($name, $option, $series = null)
 	{
-		if(isset($series)) {
-			$title = $series;
-		} else {
-			$title = 'default';
-		}
-
-		if(isset($this->types[$title]))
-			$this->types[$title]->setOption($name, $option);
-
+	    $this->jsWriter->setTypeOption($name, $option, $series);
+	    
 		return $this;
 	}
 
@@ -151,40 +147,66 @@ class Chart
 		return $this;
 	}
 
-	public function setLegend($on = true, $location = 'ne', $x = 0, $y = 0)
+	public function setLegend(array $opts = array('on' => 'true', 
+                                                  'location' => 'ne', 
+                                                  'x' => 0, 
+                                                  'y' => 0))
 	{
-		if(!$on) {
-			unset($this->options['legend']);
-		} else {
-			$legend = array();
-			$legend['show'] = true;
-			if($location == 'outside' || $location == 'outsideGrid') {
-				$legend['placement'] = $location;
-			} else {
-				$legend['location'] = $location;
-			}
-			if($x != 0)
-				$legend['xoffset'] = $x;
-			if($y != 0)
-				$legend['yoffset'] = $y;
-			$this->options['legend'] = $legend;
-		}
+		$this->jsWriter->setLegend($opts);
 
 		return $this;
 	}
 
-	public function setGrid($on = true, $color = null, $background = null)
+	public function setGrid(array $opts = array('on'=>true))
 	{
-		$this->options['grid']['drawGridLines'] = $on;
-		if(isset($color))
-			$this->options['grid']['gridLineColor'] = $color;
-		if(isset($background))
-			$this->options['grid']['background'] = $background;
-
+	    if (! $this->jsWriter instanceOf JsWriter\Ability\Griddable ) {
+	        throw new \BadMethodCallException("JsWriter not Griddable");
+	    }
+	    
+	    $this->jsWriter->setGrid($opts);
+	    
 		return $this;
 	}
+	
+	public function createSeries($data, $title = null, $type = null)
+	{
+	    switch ($type) {
+	        case 'Bubble':
+	            return new Series\BubbleSeries($data, $title, $this->jsWriter);
+	        default:
+	            return new Series($data, $title, $this->jsWriter);
+	    }
+	}
+	
+	public function createManySeries($data, $title = null, $type = null)
+	{
+	    if ( $this->jsWriter instanceOf \Altamira\JsWriter\Flot ) {
+	        $seriesArray = array();
+	        foreach ($data as $datum) {
+	            $seriesArray[] = $type == 'Bubble' 
+	                           ? $this->createSeries($datum, end($datum), $type)
+	                           : $this->createSeries(array($datum[1]), $datum[0], $type);
+	        }
+	        return $seriesArray;
+	    } else {
+	        return $this->createSeries($data, $title, $type);
+	    }
+	}
+	
+	public function addSeries( $seriesOrArray )
+	{
+	    if (is_array($seriesOrArray)) {
+	        foreach ($seriesOrArray as $series) {
+	            $this->addSingleSeries($series);
+	        }
+	    } else {
+	        $this->addSingleSeries($seriesOrArray);
+	    }
+	    
+	    return $this;
+	}
 
-	public function addSeries(Series $series)
+	public function addSingleSeries(Series $series)
 	{
 		$this->series[$series->getTitle()] = $series;
 
@@ -200,110 +222,66 @@ class Chart
 
 	public function getDiv($width = 500, $height = 400)
 	{
-		return '<div class="jqPlot" id="' . $this->name .
-			'" style="height:'. $height . 'px; width:' . $width . 'px;"></div>';
-
-		return $this;
+	    $styleOptions = array('width'    =>    $width.'px', 
+	                          'height'   =>    $height.'px'
+	                         );
+	    
+	    return ChartRenderer::render( $this, $styleOptions );
 	}
 
 	public function getFiles()
 	{
-		foreach($this->types as $type) {
-			$this->files = array_merge_recursive($this->files, $type->getFiles());
-		}
-
 		foreach($this->series as $series) {
 			$this->files = array_merge_recursive($this->files, $series->getFiles());
 		}
 
-		return $this->files;
+		return array_unique(array_merge($this->files, $this->jsWriter->getFiles()));
 	}
 
 	public function getScript()
 	{
-		$output  = '$(document).ready(function(){';
-		$output .= '$.jqplot.config.enablePlugins = true;';
-
-		$num = 0;
-		$vars = array();
-
-		$useTags = false;
-		if( (isset($this->types['default']) && $this->types['default']->getUseTags()) ||
-			(isset($this->useTags) && $this->useTags) )
-			$useTags = true;
-
-		foreach($this->series as $series) {
-			$num++;
-			$data = $series->getData($useTags);
-
-			$varname = 'plot_' . $this->name . '_' . $num;
-			$vars[] = '#' . $varname . '#';
-			$output .= $varname . ' = ' . $this->makeJSArray($data) . ';';
-		}
-
-		$output .= 'plot = $.jqplot("' . $this->name . '", ';
-		$output .= $this->makeJSArray($vars);
-		$output .= ', ';
-		$output .= $this->getOptionsJS();
-		$output .= ');';
-		$output .= '});';
-
-		return $output;
+	    return $this->jsWriter->getScript();
+	}
+	
+	public function getJsWriter()
+	{
+	    if (! $this->jsWriter ) {
+    	    $className = '\\Altamira\\JsWriter\\'.ucfirst($this->library);
+    
+    	    if (class_exists($className)) {
+    	        $instance = new $className($this);
+    	        $this->jsWriter = $instance; 
+    	    } else {
+    	        throw new \Exception("No JsWriter by name of {$className}");
+    	    }
+	    }
+	    
+	    return $this->jsWriter;
+	    
 	}
 
-	protected function runSeriesOptions()
+	public function setLibrary($library)
 	{
-		if(isset($this->types['default'])) {
-			$defaults = $this->options['seriesDefaults'];
-			$renderer = $this->types['default']->getRenderer();
-			if(isset($renderer))
-				$defaults['renderer'] = $renderer;
-			$defaults['rendererOptions'] = $this->types['default']->getRendererOptions();
-			if(count($defaults['rendererOptions']) == 0)
-				unset($defaults['rendererOptions']);
-			$this->options['seriesDefaults'] = $defaults;
-		}
-
-		$seriesOptions = array();
-		foreach($this->series as $series) {
-			$opts = $series->getOptions();
-			$title = $series->getTitle();
-			if(isset($this->types[$title])) {
-				$type = $this->types[$title];
-				$opts['renderer'] = $type->getRenderer();
-				array_merge_recursive($opts, $type->getSeriesOptions());
-			}
-			$opts['label'] = $title;
-			$seriesOptions[] = $opts;
-		}
-		$this->options['series'] = $seriesOptions;
+	    $this->library = $library;
 	}
-
-	protected function runTypeOptions()
+	
+	public function getLibrary()
 	{
-		if(isset($this->types['default'])) {
-			$this->options = array_merge_recursive($this->options, $this->types['default']->getOptions());
-		}
-
-		if(isset($this->options['axes'])) {
-			foreach($this->options['axes'] as $axis => $contents) {
-				if(isset($this->options['axes'][$axis]['renderer']) && is_array($this->options['axes'][$axis]['renderer'])) {
-					$this->options['axes'][$axis]['renderer'] = $this->options['axes'][$axis]['renderer'][0];
-				}
-			}
-		}
+	    return $this->library;
 	}
-
-	protected function getOptionsJS()
+	
+	public function getTypes()
 	{
-		$this->runSeriesOptions();
-		$this->runTypeOptions();
-		return $this->makeJSArray($this->options);
+	    return $this->types;
 	}
-
-	protected function makeJSArray($array)
+	
+	public function getSeries()
 	{
-		$options = json_encode($array);
-		return preg_replace('/"#(.*?)#"/', '$1', $options);
+	    return $this->series;
+	}
+	
+	public function getOptions()
+	{
+	    return $this->options;
 	}
 }

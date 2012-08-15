@@ -4,11 +4,27 @@ namespace Altamira\Type;
 
 abstract class TypeAbstract
 {
-	protected $pluginFiles;
+	protected $pluginFiles = array();
 	protected $renderer;
-	protected $options;
-
+	protected $options = array();
+    protected $series;
+	
 	protected $allowedRendererOptions = array();
+	
+	public function __construct(\Altamira\JsWriter\JsWriterAbstract $jsWriter)
+	{
+	    
+	    $config = \parse_ini_file(__DIR__.'/../Type/TypeConfig.ini', true);
+	    
+	    $libConfig = $config[strtolower($jsWriter->getLibrary())];
+
+	    $class = end(explode('\\', strtolower(get_class($this))));
+	    
+	    foreach ( preg_grep("/$class\./i", array_keys($libConfig)) as $key ) {
+	        $attribute = preg_replace("/{$class}\./i", '', $key);
+	        $this->{$attribute} = $libConfig[$key];
+	    }
+	}
 
 	public function getFiles()
 	{
@@ -26,7 +42,7 @@ abstract class TypeAbstract
 
 	public function getOptions()
 	{
-		return array();
+		return $this->options;
 	}
 
 	public function getSeriesOptions()
