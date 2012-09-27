@@ -1,0 +1,40 @@
+{
+    "name":"Malwarebytes/Altamira",
+    "description":"Library to display charts utilizing jqPlot or the flot library",
+    "version": "0.1.0-beta0",
+    "keywords": ["charting"],
+    "homepage": "http://github.com/malwarebytes/altamira",
+    "type":"library",
+    "license":"BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Joshua Hall-Bachner",
+            "email": "jhallbrachner@malwarebytes.org",
+            "homepage": "",
+            "role": "Developer"
+        },
+        {
+            "name": "Robert Elwell",
+            "email": "robert.elwell@gmail.com",
+            "homepage": "http://robertelwell.info",
+            "role": "Developer"
+        },
+        {
+            "name": "Jonathan Chan",
+            "email": "jchan@malwarebytes.org",
+            "homepage": "",
+            "role": "Developer"
+        }
+    ],
+
+    "require": {
+        "php": ">=5.3.0"
+    },
+
+    "autoload": {
+        "psr-0": {
+            "Altamira": "src/"
+        }
+    }
+
+}

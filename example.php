@@ -137,8 +137,11 @@ $chartIterator = new ChartIterator($charts);
 <html>
 <head>
 <script type="text/javascript" src="js/jquery-1.7.2.js"></script>
-<script type="text/javascript" src="js/excanvas.js"></script>
-<? $chartIterator->renderLibraries()
+
+<!-- enable this if you want to display the charts on IE -->
+<!--<script type="text/javascript" src="js/excanvas.js"></script>-->
+
+<?php $chartIterator->renderLibraries()
                  ->renderCss()
                  ->renderPlugins() ?>
 </head>
@@ -153,6 +156,6 @@ while ( $chartIterator->valid() ) {
 }
 ?>
 
-<? $chartIterator->renderScripts() ?>
+<?php $chartIterator->renderScripts() ?>
 
 </body>
