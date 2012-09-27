@@ -1,5 +1,5 @@
 {
-    "name":"Malwarebytes/Altamira",
+    "name":"malwarebytes/altamira",
     "description":"Library to display charts utilizing jqPlot or the flot library",
     "version": "0.1.0-beta0",
     "keywords": ["charting"],
