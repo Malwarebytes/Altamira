@@ -1,17 +1,17 @@
 <?php 
 
 namespace Altamira\ChartRenderer;
+use Altamira\ChartRenderer\RendererInterface;
 
-class DefaultRenderer extends RendererAbstract
+class DefaultRenderer implements RendererInterface
 {
     
     public static function preRender( \Altamira\Chart $chart, array $styleOptions = array() )
     {
         $style = self::renderStyle( $styleOptions );
-        $data = self::renderData( $chart );
         
         return <<<ENDDIV
-<div class="{$chart->getLibrary()}" id="{$chart->getName()}" style="{$style}"{$data}>
+<div class="{$chart->getLibrary()}" id="{$chart->getName()}" style="{$style}">
 ENDDIV;
         
     }

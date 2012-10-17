@@ -1,8 +1,9 @@
 <?php 
 
 namespace Altamira\ChartRenderer;
+use Altamira\ChartRenderer\RendererInterface;
 
-class TitleRenderer extends RendererAbstract
+class TitleRenderer implements RendererInterface
 {
     
     public static function preRender( \Altamira\Chart $chart, array $styleOptions = array() )
@@ -22,6 +23,11 @@ ENDDIV;
     public static function postRender( \Altamira\Chart $chart, array $styleOptions = array() )
     {
         return '</div>';
+    }
+    
+    public static function renderStyle( array $styleOptions = array() )
+    {
+        return '';
     }
 
 }

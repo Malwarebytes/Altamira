@@ -81,13 +81,9 @@ abstract class JsWriterAbstract
         }
     }
     
-    public function setSeriesOption($series, $name, $value)
+    public function setSeriesOption( \Altamira\Series  $series, $name, $value)
     {
-        if ($series instanceOf \Altamira\Series) {
-            $this->options['series'][$series->getTitle()][$name] = $value;
-        } else if (is_string($series)) {
-            $this->options['series'][$series][$name] = $value;
-        }
+        $this->options['series'][$series->getTitle()][$name] = $value;
         
         return $this;
     }

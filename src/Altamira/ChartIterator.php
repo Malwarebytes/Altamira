@@ -7,9 +7,12 @@ class ChartIterator extends \ArrayIterator
     
     protected $plugins;
     protected $scripts;
+    protected $config;
     
-    public function __construct( $array )
+    public function __construct( $array, $config )
     {
+        $this->config = $config;
+        
         //enforce that this is an array of charts
         $plugins = array();
         $scripts = array();
@@ -26,7 +29,7 @@ class ChartIterator extends \ArrayIterator
         }
 
         // yo dawg...
-        $this->plugins = new FilesRenderer($plugins, 'js/plugins/');
+        $this->plugins = new FilesRenderer($plugins, $config['js.pluginpath']);
         $this->scripts = new ScriptsRenderer($scripts);
         
         
@@ -69,22 +72,27 @@ class ChartIterator extends \ArrayIterator
         
     }
     
-    public function renderLibraries()
+    public function getLibraries()
     {
-        foreach ($this->libraries as $library=>$junk) {
-            
-            switch($library) {
-                case 'flot':
-                    $libraryPath = 'js/jquery.flot.js';
-                    break;
-                case 'jqPlot':
-                default:
-                    $libraryPath = 'js/jquery.jqplot.js';
-            }
-            
+        $libraryToPath = array(
+                'flot'    =>    $this->config['js.flotpath'],
+                'jqPlot'  =>    $this->config['js.jqplotpath']
+                );
+        $libraryKeys = array_unique( array_keys( $this->libraries ) );
+        $libraryPaths = array();
+        
+        foreach ($libraryKeys as $key) {
+            $libraryPaths[] = $libraryToPath[$key];
         }
         
-        echo "<script type='text/javascript' src='$libraryPath'></script>";
+        return $libraryPaths;
+    }
+    
+    public function renderLibraries()
+    {
+        foreach ($this->getLibraries() as $libraryPath) {
+            echo "<script type='text/javascript' src='$libraryPath'></script>";
+        }
         
         return $this;
     }
@@ -97,7 +105,7 @@ class ChartIterator extends \ArrayIterator
                     break;
                 case 'jqPlot':
                 default:
-                    $cssPath = 'css/jqplot.css';
+                    $cssPath = $this->config['css.jqplotpath'];
             }
         
         }

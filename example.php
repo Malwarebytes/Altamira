@@ -7,6 +7,9 @@ use Altamira\ChartIterator;
 use Altamira\Series;
 use Altamira\Series\BubbleSeries;
 use Altamira\ChartRenderer;
+use Altamira\Config;
+
+$config = new Config( 'altamira-config.ini' );
 
 $library = isset($_GET['library']) ? $_GET['library'] : 'jqPlot';
 
@@ -131,7 +134,7 @@ $charts = array($chart,
                 $chart8
                 );
 
-$chartIterator = new ChartIterator($charts);
+$chartIterator = new ChartIterator($charts, $config);
 
 ?>
 <html>

@@ -32,7 +32,7 @@ class ChartRenderer
     
     public static function pushRenderer( $renderer )
     {
-        if (! (($renderer instanceOf ChartRenderer\RendererAbstract ) || is_subclass_of($renderer, 'Altamira\ChartRenderer\RendererAbstract') )) {
+        if (! in_array( 'Altamira\ChartRenderer\RendererInterface', class_implements( $renderer ) ) ) {
             throw new \UnexpectedValueException( "Renderer must be instance of or string name of a class implementing RendererInterface" );
         }
         
@@ -43,7 +43,7 @@ class ChartRenderer
     
     public static function unshiftRenderer( $renderer )
     {
-        if (! $renderer instanceOf ChartRenderer\RendererAbstract ) {
+        if (! in_array( 'Altamira\ChartRenderer\RendererInterface', class_implements( $renderer ) ) ) {
             throw new \UnexpectedValueException( "Renderer must be instance of or string name of a class implementing RendererInterface" );
         }
         
