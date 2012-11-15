@@ -5,8 +5,8 @@ namespace Altamira\JsWriter\Ability;
 interface Labelable
 {
     
-    public function useSeriesLabels( \Altamira\Series $series, array $labels = array() );
+    public function useSeriesLabels( $seriesTitle, array $labels = array() );
     
-    public function setSeriesLabelSetting( \Altamira\Series $series, $name, $value );
+    public function setSeriesLabelSetting( $seriesTitle, $name, $value );
     
 }

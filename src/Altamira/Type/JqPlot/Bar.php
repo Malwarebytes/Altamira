@@ -33,11 +33,13 @@ class Bar extends \Altamira\Type\TypeAbstract
 
 		$opts = array('axes' => $opts);
 
-		if(isset($this->options['stackSeries']))
+		if(isset($this->options['stackSeries'])) {
 			$opts['stackSeries'] = $this->options['stackSeries'];
+		}
 
-		if(isset($this->options['seriesColors']))
+		if(isset($this->options['seriesColors'])) {
 			$opts['seriesColors'] = $this->options['seriesColors'];
+		}
 
 		return $opts;
 	}
@@ -54,14 +56,6 @@ class Bar extends \Altamira\Type\TypeAbstract
 		}
 
 		return $opts;
-	}
-
-	public function getUseTags()
-	{
-		if(isset($this->options['horizontal']) && $this->options['horizontal'])
-			return true;
-
-		return false;
 	}
 }
 

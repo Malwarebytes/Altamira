@@ -10,14 +10,6 @@ class Bar extends \Altamira\Type\TypeAbstract
                                                  'points'   =>    array('show' => false)
                               ));
 
-	public function getUseTags()
-	{
-		if(isset($this->options['horizontal']) && $this->options['horizontal'])
-			return true;
-
-		return false;
-	}
-	
 	public function setOption($name, $value)
 	{
 	    switch ($name) {

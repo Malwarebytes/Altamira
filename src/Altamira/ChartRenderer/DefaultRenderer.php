@@ -24,7 +24,8 @@ ENDDIV;
     public static function renderStyle( array $styleOptions = array() )
     {
         $style = '';
-        foreach ( $styleOptions as $key=>$val ) {
+        foreach ( $styleOptions as $key => $val ) 
+        {
             $style .= "$key: $val; ";
         }
         return $style;

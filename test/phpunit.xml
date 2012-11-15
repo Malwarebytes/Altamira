@@ -1,0 +1,28 @@
+<phpunit backupGlobals="true"
+         backupStaticAttributes="false"
+         bootstrap="../autoload.php"
+         cacheTokens="false"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         forceCoversAnnotation="false"
+         mapTestClassNameToCoveredClassName="false"
+         printerClass="PHPUnit_TextUI_ResultPrinter"
+         processIsolation="false"
+         stopOnError="false"
+         stopOnFailure="false"
+         stopOnIncomplete="false"
+         stopOnSkipped="false"
+         testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader"
+         strict="true"
+         verbose="true">
+  
+	<testsuites>
+	  <testsuite name="Altamira Test Suite">
+	    <directory>../test</directory>
+	  </testsuite>
+	</testsuites>
+  
+  
+</phpunit>

@@ -3,86 +3,101 @@
 namespace Altamira;
 
 use Altamira\JsWriter\JsWriterAbstract;
+use Altamira\ChartDatum\ChartDatumAbstract;
 
+/**
+ * This class represents a series of ChartDatum instances that can be plotted on a chart.
+ */
 class Series
 {
+    /**
+     * Counter used when a series title is not provided.
+     * @var int
+     */
 	static protected $count = 0;
+	
+	/**
+	 * An array of ChartDatumAbstract children
+	 * @var array of \Altamira\ChartDatum\ChartDatumAbstract
+	 */
 	protected $data = array();
-	protected $tags = array();
-	protected $useTags = false;
-	protected $useLabels = false;
-
+	
+	/**
+	 * The JsWriter instance responsible for rendering this series
+	 * @var \Altamira\JsWriter\JsWriterAbstract
+	 */
 	protected $jsWriter;
 	
+	/**
+	 * The title of the series, used for labeling
+	 * @var string
+	 */
 	protected $title;
-	protected $labels= array();
-	protected $files = array();
+	
+	/**
+	 * The labels for each datum, tracked by array index against the data array
+	 * @var array of strings
+	 */
+	protected $labels = array();
 
+	/**
+	 * Constructor method
+	 * @param array            $data an array of ChartDatumAbstract instances
+	 * @param string           $title the desired title of the series (used to label a series)
+	 * @param JsWriterAbstract $jsWriter the jswriter, dependency-injected for rendering
+	 * @throws \UnexpectedValueException
+	 */
 	public function __construct($data, $title = null, JsWriterAbstract $jsWriter)
 	{
 		self::$count++;
 
 		$tagcount = 0;
 		foreach($data as $datum) {
-			if(is_array($datum) && count($datum) >= 2) {
-				$this->useTags = true;
-				$this->data[] = array_shift($datum);
-				$this->tags[] = array_shift($datum);
-			} else {
-				$this->data[] = $datum;
-				if(count($this->tags) > 0) {
-					$this->tags[] = end($this->tags) + 1;
-				} else {
-					$this->tags[] = 1;
-				}
-			}
-			$tagcount++;
+            if (! $datum instanceof ChartDatumAbstract ) {
+                throw new \UnexpectedValueException( "The data array must consist of instances inheriting from ChartDatumAbstract" );
+            }
+            $datum->setJsWriter  ( $jsWriter )
+                  ->setSeries    ( $this) ;
 		}
+		$this->data = $data;
 
-		if(isset($title)) {
+		if( isset( $title ) ) {
 			$this->title = $title;
 		} else {
 			$this->title = 'Series ' . self::$count;
 		}
 
 		$this->jsWriter = $jsWriter;
-		$this->jsWriter->initializeSeries($this);
+		$this->jsWriter->initializeSeries( $this->title );
 	}
 
-	public function getFiles()
-	{
-		return $this->files;
-	}
-
-	public function setSteps($start, $step)
-	{
-		$num = $start;
-		$this->tags = array();
-
-		foreach($this->data as $item) {
-			$this->tags[] = $num;
-			$num += $step;
-		}
-	}
-
-	public function setShadow($opts = array('use'=>true, 
-                                            'angle'=>45, 
-                                            'offset'=>1.25, 
-                                            'depth'=>3, 
-                                            'alpha'=>0.1))
+	/**
+	 * Sets the shadow for this series. Refer to default options.
+	 * @param array $opts refer to the defaults for the kind of options 
+	 * @return \Altamira\Series provides fluent interface
+	 */
+	public function setShadow( $opts = array( 'use'    =>    true, 
+                                              'angle'  =>    45, 
+                                              'offset' =>    1.25, 
+                                              'depth'  =>    3, 
+                                              'alpha'  =>    0.1 ) )
 	{
 	    if ( $this->jsWriter instanceOf \Altamira\JsWriter\Ability\Shadowable ) {
-	        $this->jsWriter->setShadow($this->getTitle(), $opts);
+	        $this->jsWriter->setShadow( $this->getTitle(), $opts );
 	    }
 	    
 		return $this;
 	}
 
-	public function setFill($opts = array('use' => true, 
-                                                   'stroke' => false, 
-                                                   'color' => null, 
-                                                   'alpha' => null
-                                                  ))
+	/**
+	 * Sets fill option for JSWriter for this series
+	 * @param array $opts see constructor for keys
+	 * @return \Altamira\Series provides fluent interface
+	 */
+	public function setFill( $opts = array( 'use'    => true, 
+                                            'stroke' => false, 
+                                            'color'  => null, 
+                                            'alpha'  => null ) )
 	{
         if ( $this->jsWriter instanceOf \Altamira\JsWriter\Ability\Fillable ) {
     	    $this->jsWriter->setFill($this->getTitle(), $opts);
@@ -91,27 +106,20 @@ class Series
 		return $this;
 	}
 
-	public function getData($tags = false)
+	/**
+	 * Returns the array of ChartDatumAbstract instances set during construction
+	 * @return array of ChartDatumAbstract instances
+	 */
+	public function getData()
 	{
-		if($tags || $this->useTags) {
-			$data = array();
-			$tags = $this->tags;
-			foreach($this->data as $datum) {
-				if(is_array($datum)) {
-					$item = $datum;
-					$item[] = array_shift($tags);
-				} else {
-					$item = array($datum, array_shift($tags));
-				}
-				
-				$data[] = $item;
-			}
-			return $data;
-		} else {
-			return $this->data;
-		}
+	    return $this->data;
 	}
 
+	/**
+	 * 
+	 * @param string $title
+	 * @return \Altamira\Series
+	 */
 	public function setTitle($title)
 	{
 		$this->title = $title;
@@ -119,103 +127,149 @@ class Series
 		return $this;
 	}
 
-	public function useLabels($labels = array())
+	/**
+	 * Set the labels to be used for this series in the JsWriter
+	 * @param array $labels all strings
+	 * @return \Altamira\Series provides fluent interface
+	 */
+	public function useLabels( $labels = array() )
 	{
 	    if ($this->jsWriter instanceOf \Altamira\JsWriter\Ability\Labelable) {
-    		$this->useTags = true;
-    		$this->useLabels = true;
-    		$this->jsWriter->useSeriesLabels($this, $labels);
-            $this->jsWriter->setSeriesOption($this, 'pointLabels', array('show' => true, 'edgeTolerance' => 3));
+    		$this->jsWriter->useSeriesLabels( $this->getTitle(), $labels);
 	    }
 
 		return $this;
 	}
 
-	// @todo this logic should probably be in the jswriter
-	public function setLabelSetting($name, $value)
+	/**
+	 * Set additional metadata around labels, such as margin and position
+	 * @param string $name
+	 * @param string $value
+	 * @return \Altamira\Series provides fluent interface
+	 */
+	public function setLabelSetting( $name, $value )
 	{
 	    if ($this->jsWriter instanceOf \Altamira\JsWriter\Ability\Labelable) {
-    		$this->jsWriter->setSeriesLabelSetting($this, $name, $value);
+    		$this->jsWriter->setSeriesLabelSetting($this->getTitle(), $name, $value);
 	    }
 		
 		return $this;
 	}
 
+	/**
+	 * Returns the title set during construciton 
+	 * @return string
+	 */
 	public function getTitle()
 	{
 		return $this->title;
 	}
 
-	public function setOption($name, $value)
+	/**
+	 * Sets an option for this specific series within the JsWriter
+	 * @param string $name
+	 * @param string $value
+	 * @return \Altamira\Series provides fluent interface
+	 */
+	public function setOption( $name, $value )
 	{
-		$this->jsWriter->setSeriesOption($this, $name, $value);
+		$this->jsWriter->setSeriesOption( $this->getTitle(), $name, $value );
 
 		return $this;
 	}
 	
-	public function getOption($option)
+	/**
+	 * Returns data stored in JsWriter for a given option for this series
+	 * @param  string $option
+	 * @return string|null
+	 */
+	public function getOption( $option )
 	{
-	    return $this->jsWriter->getSeriesOption($this->getTitle(), $option);
+	    return $this->jsWriter->getSeriesOption( $this->getTitle(), $option );
 	}
 
+	/**
+	 * Gets an array of options that have been set for this series
+	 * @return array of options
+	 */
 	public function getOptions()
 	{
-        return $this->jsWriter->getOptionsForSeries($this->getTitle());
+        return $this->jsWriter->getOptionsForSeries( $this->getTitle() );
 	}
 	
-	public function usesLabels()
+	/**
+	 * Sets the line width for the series
+	 * @param string|int $val
+	 * @return \Altamira\Series provides fluent interface
+	 */
+	public function setLineWidth( $val )
 	{
-	    return isset($this->useLabels) && $this->useLabels === true;
-	}
-	
-	public function getUseTags()
-	{
-	    return $this->useTags;
-	}
-	
-	public function setLineWidth($val)
-	{
-	    if ($this->jsWriter instanceOf \Altamira\JsWriter\Ability\Lineable ) {
-	        $this->jsWriter->setSeriesLineWidth($this, $val);
+	    if ( $this->jsWriter instanceof \Altamira\JsWriter\Ability\Lineable ) {
+	        $this->jsWriter->setSeriesLineWidth( $this->getTitle(), $val );
 	    }
 	    return $this;
 	}
 	
-	public function showLine($bool = true)
+	/**
+	 * Sets whether to show a line for this series
+	 * @param bool $bool
+	 * @return \Altamira\Series provides fluent interface
+	 */
+	public function showLine( $bool = true )
 	{
-	    if ($this->jsWriter instanceOf \Altamira\JsWriter\Ability\Lineable ) {
-    	    $this->jsWriter->setSeriesShowLine($this, $bool);
+	    if ( $this->jsWriter instanceOf \Altamira\JsWriter\Ability\Lineable ) {
+    	    $this->jsWriter->setSeriesShowLine( $this->getTitle(), $bool );
 	    }
 	    return $this;
 	}
 	
-	public function showMarker($bool = true)
+	/**
+	 * Sets whether to show markers for this series in the JS Writer
+	 * @param bool $bool
+	 * @return \Altamira\Series provides fluent interface
+	 */
+	public function showMarker( $bool = true )
 	{
-	    if ($this->jsWriter instanceOf \Altamira\JsWriter\Ability\Lineable ) {
-	        $this->jsWriter->setSeriesShowMarker($this, $bool);
+	    if ( $this->jsWriter instanceOf \Altamira\JsWriter\Ability\Lineable ) {
+	        $this->jsWriter->setSeriesShowMarker( $this->getTitle(), $bool );
 	    }
 	    return $this;
 	}
 	
+	/**
+	 * Sets the kind of marker tos how for this series in the JS writer
+	 * @param unknown_type $value
+	 * @return \Altamira\Series provides fluent interface
+	 */
 	public function setMarkerStyle($value)
 	{
-	    if ($this->jsWriter instanceOf \Altamira\JsWriter\Ability\Lineable ) {
-	        $this->jsWriter->setSeriesMarkerStyle($this, $value);
+	    if ( $this->jsWriter instanceOf \Altamira\JsWriter\Ability\Lineable ) {
+	        $this->jsWriter->setSeriesMarkerStyle( $this->getTitle(), $value );
 	    }
 	    return $this;
 	}
 	
+	/**
+	 * Sets the size of the marker
+	 * @param string|int $value
+	 * @return \Altamira\Series provides fluent interface
+	 */
 	public function setMarkerSize($value)
 	{
 	    if ($this->jsWriter instanceOf \Altamira\JsWriter\Ability\Lineable ) {
-	        $this->jsWriter->setSeriesMarkerSize($this, $value);
+	        $this->jsWriter->setSeriesMarkerSize($this->getTitle(), $value);
 	    }
 	    return $this;
 	}
 	
-	public function setType($type)
+	/**
+	 * Sets the rendering type for this series
+	 * @param string $type
+	 * @return \Altamira\Series provides fluent interface
+	 */
+	public function setType( $type )
 	{
-	    $this->jsWriter->setType($type, $this);
+	    $this->jsWriter->setType( $type, $this->getTitle() );
 	    
 	    return $this;
 	}

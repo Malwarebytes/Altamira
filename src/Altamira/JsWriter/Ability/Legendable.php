@@ -4,9 +4,13 @@ namespace Altamira\JsWriter\Ability;
 
 interface Legendable
 {
-    public function setLegend(array $opts = array('on' => 'true', 
-                                                  'location' => 'ne', 
-                                                  'x' => 0, 
-                                                  'y' => 0)
+    /**
+     * Configures the legend component of a chart
+     * @param array $opts
+     */
+    public function setLegend( array $opts = array('on'       => 'true', 
+                                                   'location' => 'ne', 
+                                                   'x'        => 0, 
+                                                   'y'        => 0)
                              );
 }
