@@ -33,12 +33,11 @@ class RendererTest extends PHPUnit_Framework_TestCase
      */
     public function testFilesRenderer()
     {
-        $path = 'http://www.myjavascripthost.com/';
         $files = array( 'foo.js', 'bar.js' );
         
         $expectedResult = <<<ENDSCRIPT
-<script type="text/javascript" src="{$path}foo.js"></script>
-<script type="text/javascript" src="{$path}bar.js"></script>
+<script type="text/javascript" src="foo.js"></script>
+<script type="text/javascript" src="bar.js"></script>
 
 ENDSCRIPT;
         
@@ -48,7 +47,7 @@ ENDSCRIPT;
                 . ' Providing a path should prepend that path to each file.' 
         );
         
-        $filesRenderer = new \Altamira\FilesRenderer( $files, $path );
+        $filesRenderer = new \Altamira\FilesRenderer( $files );
         
         $filesRenderer->render()
                       ->next();

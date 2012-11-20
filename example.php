@@ -8,7 +8,7 @@ use Altamira\ChartRenderer;
 use Altamira\Config;
 use Altamira\ChartDatum\TwoDimensionalPointFactory;
 
-$config = new Config( 'altamira-config.ini' );
+\Altamira\Config::setConfigFile( 'altamira-config.ini' );
 
 $library = isset($_GET['library']) ? $_GET['library'] : \Altamira\JsWriter\JqPlot::LIBRARY;
 
@@ -180,7 +180,7 @@ if ( $library == \Altamira\JsWriter\Flot::LIBRARY ) {
     $charts[] = $chart6a;
 }
 
-$chartIterator = new ChartIterator($charts, $config);
+$chartIterator = new ChartIterator( $charts );
 
 ?>
 <html>

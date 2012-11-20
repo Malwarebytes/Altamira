@@ -127,6 +127,10 @@ abstract class JsWriterAbstract
         foreach ($this->types as $type) {
             $files = array_merge($files, $type->getFiles());
         }
+        
+        $path = \Altamira\Config::getInstance()->getPluginPath( $this->getLibrary() );
+        
+        array_walk( $files, function( &$val ) use ( $path ) { $val = $path . $val; } ); 
 
         return $files;
     }

@@ -12,13 +12,13 @@ class ChartTest extends PHPUnit_Framework_TestCase
      */
     public function testChartIterator()
     {
-        $mockConfig = $this->getMock( '\Altamira\Config', array( 'offsetGet' ), array( '../altamira-config.ini' ) );
+        \Altamira\Config::setConfigFile( 'altamira-config.test.ini' );
         
         $junkCharts = array( 'chart1', 'chart2' );
         
         $exception = null;
         try {
-            $ci = new \Altamira\ChartIterator( $junkCharts, $mockConfig );
+            $ci = new \Altamira\ChartIterator( $junkCharts );
         } catch ( Exception $e ) {
             $exception = $e;
         }
@@ -62,35 +62,11 @@ class ChartTest extends PHPUnit_Framework_TestCase
             ->method ( 'getLibrary' )
             ->will   ( $this->returnValue( \Altamira\JsWriter\JqPlot::LIBRARY ) )
         ;
-        $cssPath = 'css/jqplot.css';
-        $mockConfig
-            ->expects( $this->at( 0 ) )
-            ->method ( 'offsetGet' )
-            ->with   ( 'js.pluginpath' )
-            ->will   ( $this->returnValue( 'js/' ) )
-        ;
-        $mockConfig
-            ->expects( $this->at( 1 ) )
-            ->method ( 'offsetGet' )
-            ->with   ( 'css.jqplotpath' )
-            ->will   ( $this->returnValue( $cssPath ) )
-        ;
-        $mockConfig
-            ->expects( $this->at( 2 ) )
-            ->method ( 'offsetGet' )
-            ->with   ( 'js.flotpath' )
-            ->will   ( $this->returnValue( 'flot.js' ) )
-        ;
-        $mockConfig
-            ->expects( $this->at( 3 ) )
-            ->method ( 'offsetGet' )
-            ->with   ( 'js.jqplotpath' )
-            ->will   ( $this->returnValue( 'jqplot.js' ) )
-        ;
+        $cssPath = 'css/jquery.jqplot.css';
         
         $mockCharts = array( $mockChart1, $mockChart2 );
         
-        $chartIterator = new \Altamira\ChartIterator( $mockCharts, $mockConfig );
+        $chartIterator = new \Altamira\ChartIterator( $mockCharts );
         
         $plugins   = new ReflectionProperty( '\Altamira\ChartIterator', 'plugins' );
         $scripts   = new ReflectionProperty( '\Altamira\ChartIterator', 'scripts' );
@@ -120,14 +96,14 @@ class ChartTest extends PHPUnit_Framework_TestCase
         );
         
         $expectedOutputString = "<link rel='stylesheet' type='text/css' href='{$cssPath}'></link>";
-        $expectedOutputString .= "<script type='text/javascript' src='flot.js'></script>";
-        $expectedOutputString .= "<script type='text/javascript' src='jqplot.js'></script>";
+        $expectedOutputString .= "<script type='text/javascript' src='jquery.flot.js'></script>";
+        $expectedOutputString .= "<script type='text/javascript' src='jquery.jqplot.js'></script>";
         
         $expectedOutputString .= <<<ENDSTRING
-<script type="text/javascript" src="js/file1a.js"></script>
-<script type="text/javascript" src="js/file1b.js"></script>
-<script type="text/javascript" src="js/file2a.js"></script>
-<script type="text/javascript" src="js/file2b.js"></script>
+<script type="text/javascript" src="file1a.js"></script>
+<script type="text/javascript" src="file1b.js"></script>
+<script type="text/javascript" src="file2a.js"></script>
+<script type="text/javascript" src="file2b.js"></script>
 <script type='text/javascript'>
 (function(alert("hey");))();(function(alert("ho");))();
 </script>

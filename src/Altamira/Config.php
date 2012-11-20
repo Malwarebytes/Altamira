@@ -8,17 +8,68 @@ namespace Altamira;
 class Config implements \ArrayAccess
 {
     /**
-     * 
      * @var array
      */
-    private $config = array();
+    protected $config = array();
     
-    public function __construct( $file = null )
+    /**
+     * Singleton
+     * @var \Altamira\Config
+     */
+    protected static $instance;
+    
+    /**
+     * Location of the config file
+     * @var string
+     */
+    protected static $file;
+    
+    /**
+     * Used to instantiate the actual config from the ini file
+     * @param unknown_type $file
+     */
+    protected function __construct( $file )
     {
-        if ( $file !== null ) {
-            $this->config = parse_ini_file( $file, true );
+        $this->config = parse_ini_file( $file, true );
+    }
+    
+    /**
+     * Singleton method
+     * @return \Altamira\Config
+     */
+    public static function getInstance()
+    {
+        if ( self::$instance === null ) {
+            self::$instance = new Config( self::$file );
+        }
+        
+        return self::$instance;
+    }
+    
+    /**
+     * Provided a library, returns a path for plugins
+     * @param string $library
+     * @return string
+     */
+    public function getPluginPath( $library )
+    {
+        switch ( $library ) {
+            case \Altamira\JsWriter\Flot::LIBRARY:
+                return $this['js.flotpluginpath'];
+            case \Altamira\JsWriter\JqPlot::LIBRARY:
+                return $this['js.jqplotpluginpath'];
         }
     }
+    
+    /**
+     * Accessible path to config file
+     * @param unknown_type $file
+     */
+    public static function setConfigFile( $file )
+    {
+        self::$file = $file;
+    }
+    
 	/* (non-PHPdoc)
      * @see ArrayAccess::offsetExists()
      */

@@ -65,7 +65,7 @@ class JqPlot
         extract( $opts );
         $size = isset( $size ) ? $size : 7.5;
         
-        $this->files = array_merge_recursive( array( 'jqplot.highlighter.min.js' ), $this->files );
+        $this->files = array_merge_recursive( array( 'jqplot.highlighter.js' ), $this->files );
         $this->options['highlighter'] = array( 'sizeAdjust' => $size );
 
         return $this;
@@ -78,7 +78,7 @@ class JqPlot
      */
     public function useZooming( array $options = array( 'mode'=>'xy' ) )
     {
-        $this->files = array_merge_recursive( array( 'jqplot.cursor.min.js' ), $this->files );
+        $this->files = array_merge_recursive( array( 'jqplot.cursor.js' ), $this->files );
         $this->setNestedOptVal( $this->options, 'cursor', 'show', true );
         $this->setNestedOptVal( $this->options, 'cursor', 'zoom', true );
     
@@ -91,7 +91,7 @@ class JqPlot
      */
     public function useCursor()
     {
-        $this->files = array_merge_recursive( array( 'jqplot.cursor.min.js' ), $this->files );
+        $this->files = array_merge_recursive( array( 'jqplot.cursor.js' ), $this->files );
         $this->setNestedOptVal( $this->options, 'cursor', 'show', true );
         $this->setNestedOptVal( $this->options, 'cursor', 'showTooltip', true );
         
@@ -106,7 +106,7 @@ class JqPlot
     public function useDates( $axis = 'x' )
     {
         if ( in_array( $axis, array( 'x', 'y', 'z' ) ) ) {
-            $this->files = array_merge_recursive( array( 'jqplot.dateAxisRenderer.min.js' ), $this->files );
+            $this->files = array_merge_recursive( array( 'jqplot.dateAxisRenderer.js' ), $this->files );
             $this->setNestedOptVal( $this->options, 'axes', $axis.'axis', 'renderer', '#$.jqplot.DateAxisRenderer#' );
         }
             
@@ -343,8 +343,8 @@ class JqPlot
      */
     public function useSeriesLabels( $series, array $labels = array() )
     {
-        if ( !in_array( 'jqplot.pointLabels.min.js', $this->files ) ) {
-            $this->files[] = 'jqplot.pointLabels.min.js';
+        if ( !in_array( 'jqplot.pointLabels.js', $this->files ) ) {
+            $this->files[] = 'jqplot.pointLabels.js';
         }
         $seriesTitle = $this->getSeriesTitle( $series );
         $this->seriesLabels[$seriesTitle] = $labels;

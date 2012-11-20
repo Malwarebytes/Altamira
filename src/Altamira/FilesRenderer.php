@@ -8,19 +8,12 @@ namespace Altamira;
 class FilesRenderer extends \ArrayIterator
 {
     /**
-     * The path where all files are located
-     * @var string
-     */
-    protected $path;
-    
-    /**
      * Constructor method. Providing a path prepends that path to all files.
      * @param array  $array
      * @param string $path
      */
-    public function __construct( array $array, $path = '' )
+    public function __construct( array $array )
     {
-        $this->path = $path;
         parent::__construct($array);
     }
     
@@ -31,7 +24,7 @@ class FilesRenderer extends \ArrayIterator
     public function render()
     {
         echo <<<ENDSCRIPT
-<script type="text/javascript" src="{$this->path}{$this->current()}"></script>
+<script type="text/javascript" src="{$this->current()}"></script>
 
 ENDSCRIPT;
         

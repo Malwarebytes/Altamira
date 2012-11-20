@@ -533,7 +533,7 @@ JSON;
         $jsWriter->setType( 'Bar', $seriesTitle );
         
         $this->assertContains(
-                'jqplot.dateAxisRenderer.min.js',
+                'jqplot.dateAxisRenderer.js',
                 $jsWriter->getFiles(),
                 '\Altamira\JsWriter\JqPlot::useDates should add the date axis renderer to the files array'
         );

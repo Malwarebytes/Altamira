@@ -15,11 +15,6 @@ class ChartIterator extends \ArrayIterator
      */
     protected $scripts;
     /**
-     * Stores global configurations as set in altamira-config.ini
-     * @var \Altamira\Config
-     */
-    protected $config;
-    /**
      * The key is the library name; the value is immaterial. This is done to ensure uniqueness.
      * @var array
      */
@@ -28,13 +23,10 @@ class ChartIterator extends \ArrayIterator
     /**
      * Constructor method
      * @param array $charts array of \Altamira\Chart instances
-     * @param \Altamira\Config $config
      * @throws \Exception
      */
-    public function __construct( array $charts, \Altamira\Config $config )
+    public function __construct( array $charts )
     {
-        $this->config = $config;
-        
         //enforce that this is an array of charts
         $plugins = array();
         $scripts = array();
@@ -50,7 +42,7 @@ class ChartIterator extends \ArrayIterator
             $this->libraries[$chart->getLibrary()] = true;
         }
 
-        $this->plugins = new FilesRenderer( $plugins, $config['js.pluginpath'] );
+        $this->plugins = new FilesRenderer( $plugins );
         $this->scripts = new ScriptsRenderer( $scripts );
         
         
@@ -130,9 +122,10 @@ class ChartIterator extends \ArrayIterator
      */
     public function getLibraries()
     {
+        $config = \Altamira\Config::getInstance();
         $libraryToPath = array(
-                \Altamira\JsWriter\Flot::LIBRARY    =>    $this->config['js.flotpath'],
-                \Altamira\JsWriter\JqPlot::LIBRARY  =>    $this->config['js.jqplotpath']
+                \Altamira\JsWriter\Flot::LIBRARY    =>    $config['js.flotpath'] . 'jquery.flot.js',
+                \Altamira\JsWriter\JqPlot::LIBRARY  =>    $config['js.jqplotpath'] . 'jquery.jqplot.js'
                 );
         $libraryKeys = array_unique( array_keys( $this->libraries ) );
         $libraryPaths = array();
@@ -163,13 +156,15 @@ class ChartIterator extends \ArrayIterator
      */
     public function renderCss()
     {
+        $config = \Altamira\Config::getInstance();
+        
         foreach ( $this->libraries as $library => $junk ) {
             switch( $library ) {
                 case \Altamira\JsWriter\Flot::LIBRARY:
                     break;
                 case \Altamira\JsWriter\JqPlot::LIBRARY:
                 default:
-                    $cssPath = $this->config['css.jqplotpath'];
+                    $cssPath = $config['css.jqplotpath'];
             }
         
         }
@@ -184,6 +179,8 @@ class ChartIterator extends \ArrayIterator
     
     public function getCSSPath()
     {
+        $config = \Altamira\Config::getInstance();
+        
         $cssPath = '';
         
         foreach ( $this->libraries as $library => $junk ) {
@@ -192,7 +189,7 @@ class ChartIterator extends \ArrayIterator
                     break;
                 case \Altamira\JsWriter\JqPlot::LIBRARY:
                 default:
-                    $cssPath = $this->config['css.jqplotpath'];
+                    $cssPath = $config['css.jqplotpath'];
             }
         }
         
