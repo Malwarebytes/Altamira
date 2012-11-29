@@ -14,7 +14,12 @@ class FilesRenderer extends \ArrayIterator
      */
     public function __construct( array $array )
     {
-        parent::__construct($array);
+        $mutatedVals = array();
+        foreach ( $array as $file ) {
+            $mutatedVals[] = $this->handleMinify( $file );
+        }
+
+        parent::__construct( $mutatedVals );
     }
     
     /**
@@ -30,6 +35,22 @@ ENDSCRIPT;
         
         return $this;
         
+    }    
+
+    public function append( $val )
+    {
+        return parent::append( $this->handleMinify( $val ) );
     }
-    
+
+    public function offsetSet( $offset, $val )
+    {
+        return parent::offsetSet( $offset, $this->handleMinify( $val ) );
+    }
+
+    protected function handleMinify( $val )
+    {
+        return \Altamira\Config::minifyJs()
+               ? preg_replace( '/.(min.)?js/', '.min.js', $val )
+               : preg_replace( '/.(min.)?js/', '.js', $val );
+    }
 }

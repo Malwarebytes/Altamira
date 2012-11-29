@@ -124,8 +124,8 @@ class ChartIterator extends \ArrayIterator
     {
         $config = \Altamira\Config::getInstance();
         $libraryToPath = array(
-                \Altamira\JsWriter\Flot::LIBRARY    =>    $config['js.flotpath'] . 'jquery.flot.js',
-                \Altamira\JsWriter\JqPlot::LIBRARY  =>    $config['js.jqplotpath'] . 'jquery.jqplot.js'
+                \Altamira\JsWriter\Flot::LIBRARY    =>    $config['js.flotlib'],
+                \Altamira\JsWriter\JqPlot::LIBRARY  =>    $config['js.jqplotlib']
                 );
         $libraryKeys = array_unique( array_keys( $this->libraries ) );
         $libraryPaths = array();

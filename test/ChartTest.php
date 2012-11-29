@@ -2,6 +2,13 @@
 
 class ChartTest extends PHPUnit_Framework_TestCase
 {
+
+    public function setUp()
+    {
+        parent::setUp();
+        \Altamira\Config::setConfigFile( __DIR__ .'/altamira-config.test.ini' );
+    }
+
     /**
      * @covers \Altamira\ChartIterator::__construct
      * @covers \Altamira\ChartIterator::getLibraries
@@ -12,8 +19,6 @@ class ChartTest extends PHPUnit_Framework_TestCase
      */
     public function testChartIterator()
     {
-        \Altamira\Config::setConfigFile( 'altamira-config.test.ini' );
-        
         $junkCharts = array( 'chart1', 'chart2' );
         
         $exception = null;

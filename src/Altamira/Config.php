@@ -28,9 +28,11 @@ class Config implements \ArrayAccess
      * Used to instantiate the actual config from the ini file
      * @param unknown_type $file
      */
-    protected function __construct( $file )
+    protected function __construct( $file = null )
     {
-        $this->config = parse_ini_file( $file, true );
+        if ( !empty( $file ) && file_exists( $file ) ) {
+            $this->config = parse_ini_file( $file, true );
+        }
     }
     
     /**
@@ -59,6 +61,16 @@ class Config implements \ArrayAccess
             case \Altamira\JsWriter\JqPlot::LIBRARY:
                 return $this['js.jqplotpluginpath'];
         }
+    }
+    
+    /**
+     * Determines whether or not we should minify all JS 
+     * files in the FilesRenderer. Controlled by config value 'js.minify'.
+     */
+    public static function minifyJs()
+    {
+        $instance = self::getInstance();
+        return isset( $instance['js.minify'] ) && $instance['js.minify'];
     }
     
     /**

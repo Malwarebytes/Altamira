@@ -5,6 +5,7 @@ class RendererTest extends PHPUnit_Framework_TestCase
     /**
      * @covers \Altamira\ScriptsRenderer::__construct
      * @covers \Altamira\ScriptsRenderer::render
+     * @covers \Altamira\ScriptsRenderer::get
      */
     public function testScriptsRenderer()
     {
@@ -24,20 +25,28 @@ class RendererTest extends PHPUnit_Framework_TestCase
                 . ' Providing true as the first parameter to the render() method should cause the script to be wrapped in script tags.' 
         );
         
+        $this->assertContains(
+                "<script type='text/javascript'>",
+                $scriptsRenderer->get( true ),
+                '\Altamira\ScriptsRenderer::get should include script tags in the return value string if true is passed as the first parameter'
+        );
         $scriptsRenderer->render( true );
     }
     
     /**
      * @covers \Altamira\FilesRenderer::__construct
+     * @covers \Altamira\FilesRenderer::append
+     * @covers \Altamira\FilesRenderer::handleMinify
      * @covers \Altamira\FilesRenderer::render
      */
-    public function testFilesRenderer()
+    public function testFilesRendererNoMin()
     {
-        $files = array( 'foo.js', 'bar.js' );
+        $files = array( 'foo.js', 'bar.min.js' );
         
         $expectedResult = <<<ENDSCRIPT
 <script type="text/javascript" src="foo.js"></script>
 <script type="text/javascript" src="bar.js"></script>
+<script type="text/javascript" src="baz.js"></script>
 
 ENDSCRIPT;
         
@@ -49,9 +58,49 @@ ENDSCRIPT;
         
         $filesRenderer = new \Altamira\FilesRenderer( $files );
         
-        $filesRenderer->render()
-                      ->next();
-        $filesRenderer->render();
+        $filesRenderer->append( 'baz.min.js' );
+        
+        do {
+            $filesRenderer->render();
+            $filesRenderer->next();
+        } while ( $filesRenderer->valid() );
+        
+    }
+    
+    /**
+     * @covers \Altamira\FilesRenderer::__construct
+     * @covers \Altamira\FilesRenderer::handleMinify
+     * @covers \Altamira\FilesRenderer::offsetSet
+     * @covers \Altamira\FilesRenderer::render
+     */
+    public function testFilesRendererWithMin()
+    {
+        $files = array( 'foo.js', 'bar.min.js' );
+        
+        $expectedResult = <<<ENDSCRIPT
+<script type="text/javascript" src="foo.min.js"></script>
+<script type="text/javascript" src="bar.min.js"></script>
+<script type="text/javascript" src="baz.min.js"></script>
+
+ENDSCRIPT;
+        
+        $config = \Altamira\Config::getInstance();
+        $config['js.minify'] = true;
+        
+        $this->expectOutputString(
+                $expectedResult,
+                '\Altamira\FilesRenderer should implement ArrayIterator, and calling next() on it should provide the next script.'
+                . ' Providing a path should prepend that path to each file.' 
+        );
+        
+        $filesRenderer = new \Altamira\FilesRenderer( $files );
+        
+        $filesRenderer[2] = 'baz.js';
+        
+        do {
+            $filesRenderer->render();
+            $filesRenderer->next();
+        } while ( $filesRenderer->valid() );
     }
     
     /**
@@ -102,6 +151,14 @@ ENDDIV;
                 \Altamira\ChartRenderer\DefaultRenderer::postRender( $mockChart, $styleOptions ),
                 '\Altamira\ChartRenderer\DefaultRenderer::postRender() should return a closing div tag.'
         );
+
+        $method = new ReflectionMethod( '\Altamira\ChartRenderer', 'getInstance' );
+        $method->setAccessible( true );
+        $this->assertInstanceOf(
+                '\Altamira\ChartRenderer',
+                $method->invoke( $this->getMockBuilder( '\Altamira\ChartRenderer' )->disableOriginalConstructor()->getMock() )
+        );
+
     }
     
     /**
@@ -283,8 +340,31 @@ ENDOUTPUT;
                 $rendererChain->getValue( $instance ),
                 '\Altamira\ChartRenderer::pushRenderer should add the renderer to the beginning of the renderer chain'
         );
-        
-        
+
+        $method = new ReflectionMethod( '\Altamira\ChartRenderer', 'getInstance' );
+        $method->setAccessible( true );
+	$property = new ReflectionProperty( '\Altamira\ChartRenderer', 'instance' );
+        $mockChartRenderer = $this->getMockBuilder( '\Altamira\ChartRenderer' )
+                                  ->disableOriginalConstructor()
+                                  ->getMock();
+        $property->setAccessible( true );
+        $property->setValue( null );
+        $this->assertInstanceOf(
+                '\Altamira\ChartRenderer',
+                $method->invoke( $mockChartRenderer )
+        );
+
+	$property = new ReflectionProperty( '\Altamira\ChartRenderer', 'rendererChain' );
+        $property->setAccessible( true );
+        $property->setValue( array() );
+
+        \Altamira\ChartRenderer::render( $mockChart );
+
+        $this->assertNotEmpty(
+                $property->getValue(),
+                '\Altamira\ChartRenderer should push a default renderer by default if it has no renderers set'
+        );
+
     }
     
 }
