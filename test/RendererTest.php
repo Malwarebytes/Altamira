@@ -222,6 +222,13 @@ ENDDIV;
                 \Altamira\ChartRenderer\TitleRenderer::postRender( $mockChart, $styleOptions ),
                 '\Altamira\ChartRenderer\TitleRenderer::postRender() should return a closing div tag.'
         );
+        
+        $mockChart->hideTitle();
+        $this->assertEmpty(
+                \Altamira\ChartRenderer\TitleRenderer::preRender( $mockChart, $styleOptions )
+                . \Altamira\ChartRenderer\TitleRenderer::postRender( $mockChart, $styleOptions ),
+                '\Altmaira\ChartRenderer\TitleRenderer should render nothing for a chart that has elected to hide its title'
+        );
     }
     
     /**

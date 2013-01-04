@@ -29,12 +29,6 @@ abstract class JsWriterAbstract
     protected $callbacks = array();
     
     /**
-     * String labels stored in order of series array. 
-     * @var array
-     */
-    protected $seriesLabels = array();
-    
-    /**
      * Registry for types that may require different rendering. 
      * A type registered as 'default' will work for all series that don't have a series registered. 
      * @var array
@@ -67,17 +61,6 @@ abstract class JsWriterAbstract
     public function __construct( \Altamira\Chart $chart )
     {
         $this->chart = $chart;
-    }
-    
-    /**
-     * Combines all options as a preparation step and then calls the concrete generateScript method
-     * @return string
-     */
-    public function getScript()
-    {
-        $this->options = $this->getTypeOptions( $this->getSeriesOptions( $this->options ) );
-        
-        return $this->generateScript();
     }
     
     /**
@@ -234,28 +217,39 @@ abstract class JsWriterAbstract
     }
     
     /**
-     * Sets a type for a series or for default rendering
-     * @param string $type
-     * @param \Altamira\Series|string $series
-     * @return \Altamira\JsWriter\JsWriterAbstract
+     * Returns an type that has not yet been registered. 
+     * @param \Altamira\Type\TypeAbstract $type
+     * @param array $options
      */
-    public function setType( $type, $series = null )
+    public function setType( $type, $options = array(), $series = 'default' )
     {
-        $series = $this->getSeriesTitle( $series );
+        $options = $options ?: array(); // i shouldn't have to do this
         
-        $title = $series ?: 'default';
-    
         $className =  $this->typeNamespace . ucwords( $type );
+     
         if( class_exists( $className ) ) {
-            $this->types[$title] = new $className( $this );
+            $type = new $className( $this );
+        } else {
+            throw new \Exception( "Type {$type} does not exist" );
         }
-
+        
+        $type->setOptions( $options );
+        
+        $series = $this->getSeriesTitle( $series );
+        $this->types[$series] = $type;
+        if ( isset( $this->options['seriesStorage'][$series] ) ) {
+            $this->options['seriesStorage'][$series] = array_merge_recursive( $this->options['seriesStorage'][$series], $type->getSeriesOptions() );
+            if ( $renderer = $type->getRenderer() ) {
+                $this->options['seriesStorage'][$series]['renderer'] = $renderer;
+            }
+        }
+        $this->options = array_merge_recursive( $this->options, $type->getOptions() );
         return $this;
     }
     
     /**
      * Returns the type instance for the provided key
-     * @param unknown_type $key
+     * @param string $key
      * @return multitype:|NULL
      */
     public function getType( $series = null )
@@ -264,26 +258,6 @@ abstract class JsWriterAbstract
         $seriesTitle = $this->getSeriesTitle( $series );
         
         return isset( $this->types[$seriesTitle] ) ? $this->types[$seriesTitle] : null;
-    }
-    
-    /**
-     * Sets an option for a provided type, either by default or as a series
-     * @param string $name
-     * @param mixed $option
-     * @param \Altamira\Series|string $series
-     * @return \Altamira\JsWriter\JsWriterAbstract
-     */
-    public function setTypeOption( $name, $option, $series=null )
-    {
-        $series = $this->getSeriesTitle( $series );
-        
-        $title = $series ?: 'default';
-        
-        if( isset( $this->types[$title] ) ) {
-            $this->types[$title]->setOption( $name, $option );
-        }
-
-        return $this;
     }
     
     /**
@@ -298,12 +272,13 @@ abstract class JsWriterAbstract
         //@codeCoverageIgnoreStart
         $args = func_get_args();
         
-        if ( count( $args ) < 3 ) {
+        if ( count( $args ) == 2 && is_array( $args[1] ) ) {
+            $args = $args[1];
+        } else if ( count( $args ) < 3 ) {
             throw new \BadMethodCallException( '\Altamira\JsWriterAbstract::setNestedOptVal requires at least three arguments' );
+        } else {
+            array_shift( $args );
         }
-        
-        // ditch the first one
-        array_shift( $args );
         
         do {
             $arg = array_shift( $args );
@@ -322,15 +297,42 @@ abstract class JsWriterAbstract
     }
     
     /**
-     * Intended to transform data structures for storing info before encoding to json
-     * These transformations differe from library to library
+     * Allows you to get the value for discretely infinite nesting without notices 
+     * by returning null without a warning if it doesn't exist
      * @param array $options
+     * @param $_ ... 
+     * @return mixed
      */
-    abstract protected function getSeriesOptions( array $options );
+    protected function getNestedOptVal( array $options )
+    {
+        //@codeCoverageIgnoreStart
+        $args = func_get_args();
+        
+        if ( count( $args ) == 2 && is_array( $args[1] ) ) {
+            $args = $args[1];
+        } else if ( count( $args ) < 3 ) {
+            throw new \BadMethodCallException( '\Altamira\JsWriterAbstract::getNestedOptVal requires at least three arguments' );
+        } else {
+            array_shift( $args );
+        }
+        
+        do {
+            $arg = array_shift( $args );
+            
+            if (! isset( $options[$arg] ) ) {
+                return null;
+            }
+            $options = &$options[$arg];
+            
+        } while ( count( $args ) > 1 );
+        
+        $finalArg = array_shift( $args );
+        return isset( $options[$finalArg] ) ? $options[$finalArg] : null;
+        //@codeCoverageIgnoreEnd
+    }
+
     /**
-     * Post-processing for options based on any registered types... this data goes to different places in different libraries
-     * @param array $options
+     * Responsible for generating JavaScript
      */
-    abstract protected function getTypeOptions( array $options );
-    abstract protected function generateScript();
+    abstract public function getScript();
 }

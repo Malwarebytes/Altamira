@@ -39,6 +39,12 @@ class Chart
 	 * @var \Altamira\JsWriter\JsWriterAbstract
 	 */
 	protected $jsWriter;
+	
+	/**
+	 * Determines whether the title is hidden
+	 * @var bool
+	 */
+	protected $titleHidden = false;
 
 	/**
 	 * Constructor method. Registers the identifier name and initializes the JsWriter based on the library.
@@ -309,6 +315,10 @@ class Chart
 	 */
 	public function addSeries( $seriesOrArray )
 	{
+	    if (! is_array( $seriesOrArray ) ) {
+	        $seriesOrArray = array( $seriesOrArray );
+	    }
+	    
 	    if ( is_array( $seriesOrArray ) ) {
 	        foreach ( $seriesOrArray as $series ) 
 	        {
@@ -317,8 +327,6 @@ class Chart
 	            } 
 	            $this->addSingleSeries( $series );
 	        }
-	    } else {
-	        $this->addSingleSeries( $seriesOrArray );
 	    }
 	    
 	    return $this;
@@ -394,5 +402,25 @@ class Chart
 	public function getSeries()
 	{
 	    return $this->series;
+	}
+	
+	/**
+	 * Returns whether or not the chart title should be hidden
+	 * Note that showing the title is the default behavior.
+	 * @return bool
+	 */
+	public function titleHidden()
+	{
+        return $this->titleHidden;
+	}
+	
+	/**
+	 * Sets the variable responsible for hiding the title
+	 * Note that showing the title is the default behavior
+	 */
+	public function hideTitle()
+	{
+		$this->titleHidden = true;
+		return $this;
 	}
 }

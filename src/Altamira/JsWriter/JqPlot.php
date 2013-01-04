@@ -21,10 +21,21 @@ class JqPlot
     protected $typeNamespace = '\\Altamira\\Type\\JqPlot\\';
     
     /**
-     * (non-PHPdoc)
-     * @see \Altamira\JsWriter\JsWriterAbstract::generateScript()
+     * Global and chart-specific options. Stored here to make it easier to json-encode.
+     * @var array
      */
-    public function generateScript()
+    protected $options = array( 'seriesStorage' => array(), 
+                                'seriesDefaults' => array(  'highlighter' => array( 'show' => false ),
+                                			                'cursor'      => array( 'showTooltip' => false, 'show' => false ),
+                                                            'pointLabels' => array( 'show' => false )
+                                                         ) 
+                              );
+    
+    /**
+     * (non-PHPdoc)
+     * @see \Altamira\JsWriter\JsWriterAbstract::getScript()
+     */
+    public function getScript()
     {
         $output  = '$(document).ready(function(){';
         $output .= '$.jqplot.config.enablePlugins = true;';
@@ -40,10 +51,13 @@ class JqPlot
             $labelCopy   = null;
             
             foreach  ($data as &$datum ) {
-                if ( array_key_exists( $title, $this->seriesLabels ) && is_array( $this->seriesLabels[$title] ) ) {
-                    $datum->setLabel( $this->seriesLabels[$title][$num-1] );
+                $renderData = $datum->getRenderData();
+                
+                if ( $this->getNestedOptVal( $this->options, 'seriesDefaults', 'pointLabels', 'show' )
+                        || $this->getNestedOptVal( $this->options, 'seriesStorage', $title, 'pointLabels', 'show' ) ) {
+                    $renderData[] = $datum->getLabel();
                 }
-                $dataPrepped[] = $datum->getRenderData();
+                $dataPrepped[] = $renderData;
             }
             $varname = 'plot_' . $this->chart->getName() . '_' . $num;
             $vars[] = '#' . $varname . '#';
@@ -265,72 +279,38 @@ class JqPlot
 
         return $this;
     }
-    
+
     /**
      * (non-PHPdoc)
-     * @see \Altamira\JsWriter\JsWriterAbstract::getTypeOptions()
+     * @see \Altamira\JsWriter\JsWriterAbstract::setType()
      */
-    protected function getTypeOptions( array $options )
+    public function setType( $type, $options = array(), $series = 'default' )
     {
-        if(isset($this->types['default'])) {
-            $options = array_merge_recursive( $options, $this->types['default']->getOptions() );
-        }
-
-        return $options;
-    }
-    
-    /**
-     * (non-PHPdoc)
-     * @see \Altamira\JsWriter\JsWriterAbstract::getSeriesOptions()
-     */
-    protected function getSeriesOptions( array $options )
-    {
-        $types = $this->types;
-        
-        $defaults = array(  'highlighter' => array( 'show' => false ),
-			                'cursor'      => array( 'showTooltip' => false, 'show' => false ),
-                            'pointLabels' => array( 'show' => false )
-                         );
-
-        if( isset( $types['default'] ) ) {
-            $renderer = $types['default']->getRenderer();
-            
-            if (isset( $renderer ) ) {
-                $defaults['renderer'] = $renderer;
+        parent::setType( $type, $options, $series );
+        if ( $series == 'default' ) {
+            $rendererOptions = $this->types['default']->getRendererOptions();
+            if ( $renderer = $this->types['default']->getRenderer() ) {
+                $this->options['seriesDefaults']['renderer'] = $renderer;
             }
-            
-            $defaults['rendererOptions'] = $types['default']->getRendererOptions();
-            if( count( $defaults['rendererOptions'] ) == 0 ) {
-                unset( $defaults['rendererOptions'] );
-            }
-            
-            $options['seriesDefaults'] = $defaults;
-        }
-
-        $seriesOptions = array();
-        if ( isset( $this->options['seriesStorage'] ) ) {
-            foreach($this->options['seriesStorage'] as $title => $opts) {
-                if( isset( $types[$title] ) ) {
-                    $type = $types[$title];
-                    $opts['renderer'] = $type->getRenderer();
-                    array_merge_recursive( $opts, $type->getSeriesOptions() );
-                }
-                $opts['label'] = $title;
-                
-                $seriesOptions[] = $opts;
+            if (! empty( $rendererOptions ) ) {
+                $this->options['seriesDefaults']['rendererOptions'] = $rendererOptions;
             }
         }
-        
-        $options['seriesStorage'] = $seriesOptions;
-        $options['seriesDefaults'] = $defaults;
-        
-        return $options;
+        return $this;
     }
 
     public function getOptionsJS()
     {
         $opts = $this->options;
-        $opts['series'] = $opts['seriesStorage'];
+        foreach ( $opts['seriesStorage'] as $label => $options ) {
+            $options['label'] = $label;
+            $opts['series'][] = $options;
+        }
+        
+        if ( $this->chart->titleHidden() ) {
+        	unset( $opts['title'] );
+        }
+        
         unset($opts['seriesStorage']);
         return $this->makeJSArray( $opts );
     }
@@ -341,15 +321,13 @@ class JqPlot
      * @param array $labels an array of strings for labels, in order
      * @return \Altamira\JsWriter\JqPlot
      */
-    public function useSeriesLabels( $series, array $labels = array() )
+    public function useSeriesLabels( $series )
     {
         if ( !in_array( 'jqplot.pointLabels.js', $this->files ) ) {
             $this->files[] = 'jqplot.pointLabels.js';
         }
         $seriesTitle = $this->getSeriesTitle( $series );
-        $this->seriesLabels[$seriesTitle] = $labels;
         return $this->setNestedOptVal( $this->options, 'seriesStorage', $seriesTitle, 'pointLabels', 'show', true )
-                    ->setNestedOptVal( $this->options, 'seriesStorage', $seriesTitle, 'pointLabels', 'labels', $labels )
                     ->setNestedOptVal( $this->options, 'seriesStorage', $seriesTitle, 'pointLabels', 'edgeTolerance', 3 );
     }
     

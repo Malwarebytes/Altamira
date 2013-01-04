@@ -28,10 +28,7 @@ class FilesRenderer extends \ArrayIterator
      */
     public function render()
     {
-        echo <<<ENDSCRIPT
-<script type="text/javascript" src="{$this->current()}"></script>
-
-ENDSCRIPT;
+        echo "<script type=\"text/javascript\" src=\"{$this->current()}\"></script>\n";
         
         return $this;
         

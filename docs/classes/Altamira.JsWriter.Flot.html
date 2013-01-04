@@ -1,0 +1,1092 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>phpDocumentor » \Altamira\JsWriter\Flot</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">phpDocumentor</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Altamira.html"><i class="icon-th"></i> Altamira</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">148</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul><li>todo 
+                <span class="label label-info">1</span>
+</li></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">0</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<span class="btn-group visibility" data-toggle="buttons-checkbox"><button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button></span><div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+<ul class="side-nav nav nav-list">
+<li class="nav-header">
+<i class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public inherited"><a href="#method___construct" title="__construct :: Constructor method."><span class="description">Constructor method.</span><pre>__construct()</pre></a></li>
+<li class="method public "><a href="#method_getExtraFunctionCalls" title="getExtraFunctionCalls :: Populates script output with hacks required to give Flot featural parity with jqPlot"><span class="description">Populates script output with hacks required to give Flot featural parity with jqPlot</span><pre>getExtraFunctionCalls()</pre></a></li>
+<li class="method public inherited"><a href="#method_getFiles" title="getFiles :: Returns an array of files required to render the chart
+Includes the default files, as well as any files registered by type
+It's important to note that some methods in concrete classes will add additional files to this instance"><span class="description">Returns an array of files required to render the chart
+Includes the default files, as well as any files registered by type
+It's important to note that some methods in concrete classes will add additional files to this instance</span><pre>getFiles()</pre></a></li>
+<li class="method public inherited"><a href="#method_getLibrary" title="getLibrary :: This is used to differentiate jsWriters of different kinds using a string name"><span class="description">This is used to differentiate jsWriters of different kinds using a string name</span><pre>getLibrary()</pre></a></li>
+<li class="method public inherited"><a href="#method_getOption" title="getOption :: Returns global options stored in the JsWriter instance."><span class="description">Returns global options stored in the JsWriter instance.</span><pre>getOption()</pre></a></li>
+<li class="method public inherited"><a href="#method_getOptionsForSeries" title="getOptionsForSeries :: Returns the options for a series"><span class="description">Returns the options for a series</span><pre>getOptionsForSeries()</pre></a></li>
+<li class="method public "><a href="#method_getOptionsJS" title="getOptionsJS :: Mutates the option array to the format required for flot"><span class="description">Mutates the option array to the format required for flot</span><pre>getOptionsJS()</pre></a></li>
+<li class="method public "><a href="#method_getScript" title="getScript :: (non-PHPdoc)"><span class="description">(non-PHPdoc)</span><pre>getScript()</pre></a></li>
+<li class="method public inherited"><a href="#method_getSeriesOption" title="getSeriesOption :: Returns an option for a specific series."><span class="description">Returns an option for a specific series.</span><pre>getSeriesOption()</pre></a></li>
+<li class="method public inherited"><a href="#method_getType" title="getType :: Returns the type instance for the provided key"><span class="description">Returns the type instance for the provided key</span><pre>getType()</pre></a></li>
+<li class="method public "><a href="#method_initializeSeries" title="initializeSeries :: (non-PHPdoc)"><span class="description">(non-PHPdoc)</span><pre>initializeSeries()</pre></a></li>
+<li class="method public inherited"><a href="#method_makeJSArray" title="makeJSArray :: JSON-encoding with some additional treatments
+-- anything wrapped in hashes will be treated as bare in js (not wrapped in quotes, for example)
+-- callbacks are introduced where they are stored after json-encoding, so that they are evaluated"><span class="description">JSON-encoding with some additional treatments
+-- anything wrapped in hashes will be treated as bare in js (not wrapped in quotes, for example)
+-- callbacks are introduced where they are stored after json-encoding, so that they are evaluated</span><pre>makeJSArray()</pre></a></li>
+<li class="method public "><a href="#method_prepOpts" title="prepOpts :: Prepares default values for a series array"><span class="description">Prepares default values for a series array</span><pre>prepOpts()</pre></a></li>
+<li class="method public "><a href="#method_setAxisOptions" title="setAxisOptions :: Sets an option for a given axis"><span class="description">Sets an option for a given axis</span><pre>setAxisOptions()</pre></a></li>
+<li class="method public "><a href="#method_setAxisTicks" title="setAxisTicks :: Responsible for setting the tick labels on a given axis"><span class="description">Responsible for setting the tick labels on a given axis</span><pre>setAxisTicks()</pre></a></li>
+<li class="method public "><a href="#method_setFill" title="setFill :: (non-PHPdoc)"><span class="description">(non-PHPdoc)</span><pre>setFill()</pre></a></li>
+<li class="method public "><a href="#method_setGrid" title="setGrid :: (non-PHPdoc)"><span class="description">(non-PHPdoc)</span><pre>setGrid()</pre></a></li>
+<li class="method public "><a href="#method_setLegend" title="setLegend :: (non-PHPdoc)"><span class="description">(non-PHPdoc)</span><pre>setLegend()</pre></a></li>
+<li class="method public inherited"><a href="#method_setOption" title="setOption :: Sets a global option for JS rendering"><span class="description">Sets a global option for JS rendering</span><pre>setOption()</pre></a></li>
+<li class="method public "><a href="#method_setSeriesLabelSetting" title="setSeriesLabelSetting :: (non-PHPdoc)"><span class="description">(non-PHPdoc)</span><pre>setSeriesLabelSetting()</pre></a></li>
+<li class="method public "><a href="#method_setSeriesLineWidth" title="setSeriesLineWidth :: (non-PHPdoc)"><span class="description">(non-PHPdoc)</span><pre>setSeriesLineWidth()</pre></a></li>
+<li class="method public "><a href="#method_setSeriesMarkerSize" title="setSeriesMarkerSize :: (non-PHPdoc)"><span class="description">(non-PHPdoc)</span><pre>setSeriesMarkerSize()</pre></a></li>
+<li class="method public "><a href="#method_setSeriesMarkerStyle" title="setSeriesMarkerStyle :: (non-PHPdoc)"><span class="description">(non-PHPdoc)</span><pre>setSeriesMarkerStyle()</pre></a></li>
+<li class="method public inherited"><a href="#method_setSeriesOption" title="setSeriesOption :: Set a series-specific value for rendering JS"><span class="description">Set a series-specific value for rendering JS</span><pre>setSeriesOption()</pre></a></li>
+<li class="method public "><a href="#method_setSeriesShowLine" title="setSeriesShowLine :: (non-PHPdoc)"><span class="description">(non-PHPdoc)</span><pre>setSeriesShowLine()</pre></a></li>
+<li class="method public "><a href="#method_setSeriesShowMarker" title="setSeriesShowMarker :: (non-PHPdoc)"><span class="description">(non-PHPdoc)</span><pre>setSeriesShowMarker()</pre></a></li>
+<li class="method public "><a href="#method_setShadow" title="setShadow :: (non-PHPdoc)"><span class="description">(non-PHPdoc)</span><pre>setShadow()</pre></a></li>
+<li class="method public inherited"><a href="#method_setType" title="setType :: Returns an type that has not yet been registered."><span class="description">Returns an type that has not yet been registered.</span><pre>setType()</pre></a></li>
+<li class="method public "><a href="#method_useCursor" title="useCursor :: (non-PHPdoc)"><span class="description">(non-PHPdoc)</span><pre>useCursor()</pre></a></li>
+<li class="method public "><a href="#method_useDates" title="useDates :: (non-PHPdoc)"><span class="description">(non-PHPdoc)</span><pre>useDates()</pre></a></li>
+<li class="method public "><a href="#method_useHighlighting" title="useHighlighting :: (non-PHPdoc)"><span class="description">(non-PHPdoc)</span><pre>useHighlighting()</pre></a></li>
+<li class="method public "><a href="#method_useSeriesLabels" title="useSeriesLabels :: (non-PHPdoc)"><span class="description">(non-PHPdoc)</span><pre>useSeriesLabels()</pre></a></li>
+<li class="method public "><a href="#method_useZooming" title="useZooming :: (non-PHPdoc)"><span class="description">(non-PHPdoc)</span><pre>useZooming()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected inherited"><a href="#method_getCallbackPlaceholder" title="getCallbackPlaceholder :: Registers a callback with the JsWriter and returns a key referencing it."><span class="description">Registers a callback with the JsWriter and returns a key referencing it.</span><pre>getCallbackPlaceholder()</pre></a></li>
+<li class="method protected inherited"><a href="#method_getNestedOptVal" title="getNestedOptVal :: Allows you to get the value for discretely infinite nesting without notices
+by returning null without a warning if it doesn't exist"><span class="description">Allows you to get the value for discretely infinite nesting without notices
+by returning null without a warning if it doesn't exist</span><pre>getNestedOptVal()</pre></a></li>
+<li class="method protected "><a href="#method_getOptVal" title="getOptVal :: Retrieves a nested value or null"><span class="description">Retrieves a nested value or null</span><pre>getOptVal()</pre></a></li>
+<li class="method protected inherited"><a href="#method_getSeriesTitle" title="getSeriesTitle :: supports accessing series values by instance or title"><span class="description">supports accessing series values by instance or title</span><pre>getSeriesTitle()</pre></a></li>
+<li class="method protected inherited"><a href="#method_setNestedOptVal" title="setNestedOptVal :: Allows you to set discretely infinite nesting without notices
+by creating an empty array for key values that don't already exist"><span class="description">Allows you to set discretely infinite nesting without notices
+by creating an empty array for key values that don't already exist</span><pre>setNestedOptVal()</pre></a></li>
+<li class="method protected "><a href="#method_setOpt" title="setOpt :: Sets a value in a nested array based on a dot-concatenated string
+Used primarily for mapping"><span class="description">Sets a value in a nested array based on a dot-concatenated string
+Used primarily for mapping</span><pre>setOpt()</pre></a></li>
+<li class="method protected "><a href="#method_unsetOpt" title="unsetOpt :: Handles nested mappings"><span class="description">Handles nested mappings</span><pre>unsetOpt()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected inherited"><a href="#property_callbacks" title="$callbacks :: Stores JavaScript callbacks required to render the registered chart"><span class="description"></span><pre>$callbacks</pre></a></li>
+<li class="property protected inherited"><a href="#property_chart" title="$chart :: The chart instance this JsWriter interacts with."><span class="description"></span><pre>$chart</pre></a></li>
+<li class="property protected "><a href="#property_dateAxes" title="$dateAxes :: "><span class="description"></span><pre>$dateAxes</pre></a></li>
+<li class="property protected inherited"><a href="#property_files" title="$files :: Stores files that are required to properly render the registered chart"><span class="description"></span><pre>$files</pre></a></li>
+<li class="property protected "><a href="#property_highlighting" title="$highlighting :: "><span class="description"></span><pre>$highlighting</pre></a></li>
+<li class="property protected "><a href="#property_labelSettings" title="$labelSettings :: "><span class="description"></span><pre>$labelSettings</pre></a></li>
+<li class="property protected "><a href="#property_library" title="$library :: String name of JsWriter library."><span class="description"></span><pre>$library</pre></a></li>
+<li class="property protected inherited"><a href="#property_options" title="$options :: Global and chart-specific options."><span class="description"></span><pre>$options</pre></a></li>
+<li class="property protected "><a href="#property_pointLabels" title="$pointLabels :: "><span class="description"></span><pre>$pointLabels</pre></a></li>
+<li class="property protected "><a href="#property_typeNamespace" title="$typeNamespace :: The namespace where type classes are stored for the concrete class"><span class="description"></span><pre>$typeNamespace</pre></a></li>
+<li class="property protected inherited"><a href="#property_types" title="$types :: Registry for types that may require different rendering."><span class="description"></span><pre>$types</pre></a></li>
+<li class="property protected inherited"><a href="#property_useLabels" title="$useLabels :: A flag for whether to use labels in this JsWriter."><span class="description"></span><pre>$useLabels</pre></a></li>
+<li class="property protected "><a href="#property_zooming" title="$zooming :: "><span class="description"></span><pre>$zooming</pre></a></li>
+</ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul>
+<li class="property private "><a href="#property_nativeOpts" title="$nativeOpts :: "><span class="description"></span><pre>$nativeOpts</pre></a></li>
+<li class="property private "><a href="#property_optsMapper" title="$optsMapper :: "><span class="description"></span><pre>$optsMapper</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i class="icon-custom icon-constant"></i> Constants
+                    <ul>
+<li class="constant  "><a href="#constant_HIGHLIGHTING_FUNCTION" title="HIGHLIGHTING_FUNCTION :: "><span class="description">HIGHLIGHTING_FUNCTION</span><pre>HIGHLIGHTING_FUNCTION</pre></a></li>
+<li class="constant  "><a href="#constant_LABELS_FUNCTION" title="LABELS_FUNCTION :: "><span class="description">LABELS_FUNCTION</span><pre>LABELS_FUNCTION</pre></a></li>
+<li class="constant  "><a href="#constant_LIBRARY" title="LIBRARY :: "><span class="description">LIBRARY</span><pre>LIBRARY</pre></a></li>
+<li class="constant  "><a href="#constant_SCRIPT_OUTPUT" title="SCRIPT_OUTPUT :: "><span class="description">SCRIPT_OUTPUT</span><pre>SCRIPT_OUTPUT</pre></a></li>
+<li class="constant  "><a href="#constant_ZOOMING_FUNCTION" title="ZOOMING_FUNCTION :: "><span class="description">ZOOMING_FUNCTION</span><pre>ZOOMING_FUNCTION</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a id="\Altamira\JsWriter\Flot"></a><ul class="breadcrumb">
+<li>
+<a href="../index.html"><i class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li><a href="../namespaces/Altamira.html">Altamira</a></li>
+<li>
+<span class="divider">\</span><a href="../namespaces/Altamira.JsWriter.html">JsWriter</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Altamira.JsWriter.Flot.html">Flot</a>
+</li>
+</ul>
+<div class="element class"><div class="details">
+<h3>
+<i class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct" data-toggle="collapse" data-target=".method___construct .collapse">
+<h2>Constructor method.</h2>
+<pre>__construct(\Altamira\Chart $chart) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Requires the chart to be rendered. Every chart has its own JsWriter instance.</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::__construct()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$chart</h4>
+<code><a href="../classes/Altamira.Chart.html">\Altamira\Chart</a></code>
+</div>
+</div></div>
+</div>
+<a id="method_getExtraFunctionCalls"></a><div class="element clickable method public method_getExtraFunctionCalls" data-toggle="collapse" data-target=".method_getExtraFunctionCalls .collapse">
+<h2>Populates script output with hacks required to give Flot featural parity with jqPlot</h2>
+<pre>getExtraFunctionCalls(\Altamira\JsWriter\unknown_type $dataArrayJs, \Altamira\JsWriter\unknown_type $optionsJs) : \Altamira\JsWriter\multitype:string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$dataArrayJs</h4>
+<code>\Altamira\JsWriter\unknown_type</code>
+</div>
+<div class="subelement argument">
+<h4>$optionsJs</h4>
+<code>\Altamira\JsWriter\unknown_type</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>\Altamira\JsWriter\multitype:string</code></div>
+</div></div>
+</div>
+<a id="method_getFiles"></a><div class="element clickable method public method_getFiles" data-toggle="collapse" data-target=".method_getFiles .collapse">
+<h2>Returns an array of files required to render the chart
+Includes the default files, as well as any files registered by type
+It's important to note that some methods in concrete classes will add additional files to this instance</h2>
+<pre>getFiles() : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::getFiles()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getLibrary"></a><div class="element clickable method public method_getLibrary" data-toggle="collapse" data-target=".method_getLibrary .collapse">
+<h2>This is used to differentiate jsWriters of different kinds using a string name</h2>
+<pre>getLibrary() : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::getLibrary()</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getOption"></a><div class="element clickable method public method_getOption" data-toggle="collapse" data-target=".method_getOption .collapse">
+<h2>Returns global options stored in the JsWriter instance.</h2>
+<pre>getOption(string $key, mixed $default) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Allows for variable default value.</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::getOption()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$key</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$default</h4>
+<code>mixed</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>mixed</code></div>
+</div></div>
+</div>
+<a id="method_getOptionsForSeries"></a><div class="element clickable method public method_getOptionsForSeries" data-toggle="collapse" data-target=".method_getOptionsForSeries .collapse">
+<h2>Returns the options for a series</h2>
+<pre>getOptionsForSeries(<a href="../classes/Altamira.Series.html">\Altamira\Series</a> | string $series) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::getOptionsForSeries()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$series</h4>
+<code><a href="../classes/Altamira.Series.html">\Altamira\Series</a></code><code>string</code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="http://php.net/manual/en/class.exception.php">\Exception</a></code></th>
+<td></td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>mixed</code></div>
+</div></div>
+</div>
+<a id="method_getOptionsJS"></a><div class="element clickable method public method_getOptionsJS" data-toggle="collapse" data-target=".method_getOptionsJS .collapse">
+<h2>Mutates the option array to the format required for flot</h2>
+<pre>getOptionsJS() : \Altamira\JsWriter\Ambigous</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Altamira\JsWriter\Ambigous</code><string, mixed></div>
+</div></div>
+</div>
+<a id="method_getScript"></a><div class="element clickable method public method_getScript" data-toggle="collapse" data-target=".method_getScript .collapse">
+<h2>(non-PHPdoc)</h2>
+<pre>getScript() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="JsWriter.JsWriterAbstract.html#%5CAltamira%5CJsWriter%5CJsWriterAbstract::getScript()">\Altamira\JsWriter\JsWriterAbstract::getScript()</a></td>
+</tr></table>
+</div></div>
+</div>
+<a id="method_getSeriesOption"></a><div class="element clickable method public method_getSeriesOption" data-toggle="collapse" data-target=".method_getSeriesOption .collapse">
+<h2>Returns an option for a specific series.</h2>
+<pre>getSeriesOption(<a href="../classes/Altamira.Series.html">\Altamira\Series</a> | string $series, string $option, mixed $default) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Accepts title or instance.</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::getSeriesOption()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$series</h4>
+<code><a href="../classes/Altamira.Series.html">\Altamira\Series</a></code><code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$option</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$default</h4>
+<code>mixed</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>mixed</code></div>
+</div></div>
+</div>
+<a id="method_getType"></a><div class="element clickable method public method_getType" data-toggle="collapse" data-target=".method_getType .collapse">
+<h2>Returns the type instance for the provided key</h2>
+<pre>getType($series) : \Altamira\JsWriter\multitype: | NULL</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::getType()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$series</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Altamira\JsWriter\multitype:</code><code>NULL</code>
+</div>
+</div></div>
+</div>
+<a id="method_initializeSeries"></a><div class="element clickable method public method_initializeSeries" data-toggle="collapse" data-target=".method_initializeSeries .collapse">
+<h2>(non-PHPdoc)</h2>
+<pre>initializeSeries(<a href="../classes/Altamira.Series.html">\Altamira\Series</a> | string $series) : <a href="../classes/Altamira.JsWriter.JsWriterAbstract.html">\Altamira\JsWriter\JsWriterAbstract</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="JsWriter.JsWriterAbstract.html#%5CAltamira%5CJsWriter%5CJsWriterAbstract::initializeSeries()">\Altamira\JsWriter\JsWriterAbstract::initializeSeries()</a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$series</h4>
+<code><a href="../classes/Altamira.Series.html">\Altamira\Series</a></code><code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code><a href="../classes/Altamira.JsWriter.JsWriterAbstract.html">\Altamira\JsWriter\JsWriterAbstract</a></code></div>
+</div></div>
+</div>
+<a id="method_makeJSArray"></a><div class="element clickable method public method_makeJSArray" data-toggle="collapse" data-target=".method_makeJSArray .collapse">
+<h2>JSON-encoding with some additional treatments
+-- anything wrapped in hashes will be treated as bare in js (not wrapped in quotes, for example)
+-- callbacks are introduced where they are stored after json-encoding, so that they are evaluated</h2>
+<pre>makeJSArray(array $array) : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::makeJSArray()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$array</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_prepOpts"></a><div class="element clickable method public method_prepOpts" data-toggle="collapse" data-target=".method_prepOpts .collapse">
+<h2>Prepares default values for a series array</h2>
+<pre>prepOpts(array $opts) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$opts</h4>
+<code>array</code>
+</div>
+</div></div>
+</div>
+<a id="method_setAxisOptions"></a><div class="element clickable method public method_setAxisOptions" data-toggle="collapse" data-target=".method_setAxisOptions .collapse">
+<h2>Sets an option for a given axis</h2>
+<pre>setAxisOptions(string $axis, string $name, mixed $value) : <a href="../classes/Altamira.JsWriter.Flot.html">\Altamira\JsWriter\Flot</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$axis</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$value</h4>
+<code>mixed</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code><a href="../classes/Altamira.JsWriter.Flot.html">\Altamira\JsWriter\Flot</a></code></div>
+</div></div>
+</div>
+<a id="method_setAxisTicks"></a><div class="element clickable method public method_setAxisTicks" data-toggle="collapse" data-target=".method_setAxisTicks .collapse">
+<h2>Responsible for setting the tick labels on a given axis</h2>
+<pre>setAxisTicks(string $axis, array $ticks) : <a href="../classes/Altamira.JsWriter.Flot.html">\Altamira\JsWriter\Flot</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$axis</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$ticks</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code><a href="../classes/Altamira.JsWriter.Flot.html">\Altamira\JsWriter\Flot</a></code></div>
+</div></div>
+</div>
+<a id="method_setFill"></a><div class="element clickable method public method_setFill" data-toggle="collapse" data-target=".method_setFill .collapse">
+<h2>(non-PHPdoc)</h2>
+<pre>setFill(string | <a href="../classes/Altamira.Chart.html">\Altamira\Chart</a> $series, array $opts) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="JsWriter.Ability.Fillable.html#%5CAltamira%5CJsWriter%5CAbility%5CFillable::setFill()">\Altamira\JsWriter\Ability\Fillable::setFill()</a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$series</h4>
+<code>string</code><code><a href="../classes/Altamira.Chart.html">\Altamira\Chart</a></code>
+</div>
+<div class="subelement argument">
+<h4>$opts</h4>
+<code>array</code>
+</div>
+</div></div>
+</div>
+<a id="method_setGrid"></a><div class="element clickable method public method_setGrid" data-toggle="collapse" data-target=".method_setGrid .collapse">
+<h2>(non-PHPdoc)</h2>
+<pre>setGrid(array $opts) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="JsWriter.Ability.Griddable.html#%5CAltamira%5CJsWriter%5CAbility%5CGriddable::setGrid()">\Altamira\JsWriter\Ability\Griddable::setGrid()</a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$opts</h4>
+<code>array</code>
+</div>
+</div></div>
+</div>
+<a id="method_setLegend"></a><div class="element clickable method public method_setLegend" data-toggle="collapse" data-target=".method_setLegend .collapse">
+<h2>(non-PHPdoc)</h2>
+<pre>setLegend(array $opts) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="JsWriter.Ability.Legendable.html#%5CAltamira%5CJsWriter%5CAbility%5CLegendable::setLegend()">\Altamira\JsWriter\Ability\Legendable::setLegend()</a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$opts</h4>
+<code>array</code>
+</div>
+</div></div>
+</div>
+<a id="method_setOption"></a><div class="element clickable method public method_setOption" data-toggle="collapse" data-target=".method_setOption .collapse">
+<h2>Sets a global option for JS rendering</h2>
+<pre>setOption(string $key, mixed $value) : <a href="../classes/Altamira.JsWriter.JsWriterAbstract.html">\Altamira\JsWriter\JsWriterAbstract</a></pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::setOption()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$key</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$value</h4>
+<code>mixed</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code><a href="../classes/Altamira.JsWriter.JsWriterAbstract.html">\Altamira\JsWriter\JsWriterAbstract</a></code></div>
+</div></div>
+</div>
+<a id="method_setSeriesLabelSetting"></a><div class="element clickable method public method_setSeriesLabelSetting" data-toggle="collapse" data-target=".method_setSeriesLabelSetting .collapse">
+<h2>(non-PHPdoc)</h2>
+<pre>setSeriesLabelSetting($seriesTitle, $name, $value) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="JsWriter.Ability.Labelable.html#%5CAltamira%5CJsWriter%5CAbility%5CLabelable::setSeriesLabelSetting()">\Altamira\JsWriter\Ability\Labelable::setSeriesLabelSetting()</a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$seriesTitle</h4></div>
+<div class="subelement argument"><h4>$name</h4></div>
+<div class="subelement argument"><h4>$value</h4></div>
+</div></div>
+</div>
+<a id="method_setSeriesLineWidth"></a><div class="element clickable method public method_setSeriesLineWidth" data-toggle="collapse" data-target=".method_setSeriesLineWidth .collapse">
+<h2>(non-PHPdoc)</h2>
+<pre>setSeriesLineWidth(string $seriesTitle, int $value) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="JsWriter.Ability.Lineable.html#%5CAltamira%5CJsWriter%5CAbility%5CLineable::setSeriesLineWidth()">\Altamira\JsWriter\Ability\Lineable::setSeriesLineWidth()</a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$seriesTitle</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$value</h4>
+<code>int</code>
+</div>
+</div></div>
+</div>
+<a id="method_setSeriesMarkerSize"></a><div class="element clickable method public method_setSeriesMarkerSize" data-toggle="collapse" data-target=".method_setSeriesMarkerSize .collapse">
+<h2>(non-PHPdoc)</h2>
+<pre>setSeriesMarkerSize(string $seriesTitle, int | string $value) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="JsWriter.Ability.Lineable.html#%5CAltamira%5CJsWriter%5CAbility%5CLineable::setSeriesMarkerSize()">\Altamira\JsWriter\Ability\Lineable::setSeriesMarkerSize()</a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$seriesTitle</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$value</h4>
+<code>int</code><code>string</code>
+</div>
+</div></div>
+</div>
+<a id="method_setSeriesMarkerStyle"></a><div class="element clickable method public method_setSeriesMarkerStyle" data-toggle="collapse" data-target=".method_setSeriesMarkerStyle .collapse">
+<h2>(non-PHPdoc)</h2>
+<pre>setSeriesMarkerStyle(string $seriesTitle, string $value) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>diamond, point, etc)</p></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="JsWriter.Ability.Lineable.html#%5CAltamira%5CJsWriter%5CAbility%5CLineable::setSeriesMarkerStyle()">\Altamira\JsWriter\Ability\Lineable::setSeriesMarkerStyle()</a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$seriesTitle</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$value</h4>
+<code>string</code>
+</div>
+</div></div>
+</div>
+<a id="method_setSeriesOption"></a><div class="element clickable method public method_setSeriesOption" data-toggle="collapse" data-target=".method_setSeriesOption .collapse">
+<h2>Set a series-specific value for rendering JS</h2>
+<pre>setSeriesOption(string | <a href="../classes/Altamira.Series.html">\Altamira\Series</a> $series, string $name, mixed $value) : <a href="../classes/Altamira.JsWriter.JsWriterAbstract.html">\Altamira\JsWriter\JsWriterAbstract</a></pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::setSeriesOption()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$series</h4>
+<code>string</code><code><a href="../classes/Altamira.Series.html">\Altamira\Series</a></code>
+</div>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$value</h4>
+<code>mixed</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code><a href="../classes/Altamira.JsWriter.JsWriterAbstract.html">\Altamira\JsWriter\JsWriterAbstract</a></code></div>
+</div></div>
+</div>
+<a id="method_setSeriesShowLine"></a><div class="element clickable method public method_setSeriesShowLine" data-toggle="collapse" data-target=".method_setSeriesShowLine .collapse">
+<h2>(non-PHPdoc)</h2>
+<pre>setSeriesShowLine(string $seriesTitle, bool $bool) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="JsWriter.Ability.Lineable.html#%5CAltamira%5CJsWriter%5CAbility%5CLineable::setSeriesShowLine()">\Altamira\JsWriter\Ability\Lineable::setSeriesShowLine()</a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$seriesTitle</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$bool</h4>
+<code>bool</code>
+</div>
+</div></div>
+</div>
+<a id="method_setSeriesShowMarker"></a><div class="element clickable method public method_setSeriesShowMarker" data-toggle="collapse" data-target=".method_setSeriesShowMarker .collapse">
+<h2>(non-PHPdoc)</h2>
+<pre>setSeriesShowMarker(string $seriesTitle, bool $bool) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="JsWriter.Ability.Lineable.html#%5CAltamira%5CJsWriter%5CAbility%5CLineable::setSeriesShowMarker()">\Altamira\JsWriter\Ability\Lineable::setSeriesShowMarker()</a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$seriesTitle</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$bool</h4>
+<code>bool</code>
+</div>
+</div></div>
+</div>
+<a id="method_setShadow"></a><div class="element clickable method public method_setShadow" data-toggle="collapse" data-target=".method_setShadow .collapse">
+<h2>(non-PHPdoc)</h2>
+<pre>setShadow($series, $opts) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="JsWriter.Ability.Shadowable.html#%5CAltamira%5CJsWriter%5CAbility%5CShadowable::setShadow()">\Altamira\JsWriter\Ability\Shadowable::setShadow()</a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$series</h4></div>
+<div class="subelement argument"><h4>$opts</h4></div>
+</div></div>
+</div>
+<a id="method_setType"></a><div class="element clickable method public method_setType" data-toggle="collapse" data-target=".method_setType .collapse">
+<h2>Returns an type that has not yet been registered.</h2>
+<pre>setType(<a href="../classes/Altamira.Type.TypeAbstract.html">\Altamira\Type\TypeAbstract</a> $type, array $options, $series) </pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::setType()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$type</h4>
+<code><a href="../classes/Altamira.Type.TypeAbstract.html">\Altamira\Type\TypeAbstract</a></code>
+</div>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>array</code>
+</div>
+<div class="subelement argument"><h4>$series</h4></div>
+</div></div>
+</div>
+<a id="method_useCursor"></a><div class="element clickable method public method_useCursor" data-toggle="collapse" data-target=".method_useCursor .collapse">
+<h2>(non-PHPdoc)</h2>
+<pre>useCursor() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="JsWriter.Ability.Cursorable.html#%5CAltamira%5CJsWriter%5CAbility%5CCursorable::useCursor()">\Altamira\JsWriter\Ability\Cursorable::useCursor()</a></td>
+</tr></table>
+</div></div>
+</div>
+<a id="method_useDates"></a><div class="element clickable method public method_useDates" data-toggle="collapse" data-target=".method_useDates .collapse">
+<h2>(non-PHPdoc)</h2>
+<pre>useDates(\Altamira\JsWriter\Ability\unknown_type $axis) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="JsWriter.Ability.Datable.html#%5CAltamira%5CJsWriter%5CAbility%5CDatable::useDates()">\Altamira\JsWriter\Ability\Datable::useDates()</a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$axis</h4>
+<code>\Altamira\JsWriter\Ability\unknown_type</code>
+</div>
+</div></div>
+</div>
+<a id="method_useHighlighting"></a><div class="element clickable method public method_useHighlighting" data-toggle="collapse" data-target=".method_useHighlighting .collapse">
+<h2>(non-PHPdoc)</h2>
+<pre>useHighlighting(array $opts) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="JsWriter.Ability.Highlightable.html#%5CAltamira%5CJsWriter%5CAbility%5CHighlightable::useHighlighting()">\Altamira\JsWriter\Ability\Highlightable::useHighlighting()</a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$opts</h4></div>
+</div></div>
+</div>
+<a id="method_useSeriesLabels"></a><div class="element clickable method public method_useSeriesLabels" data-toggle="collapse" data-target=".method_useSeriesLabels .collapse">
+<h2>(non-PHPdoc)</h2>
+<pre>useSeriesLabels($seriesTitle) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="JsWriter.Ability.Labelable.html#%5CAltamira%5CJsWriter%5CAbility%5CLabelable::useSeriesLabels()">\Altamira\JsWriter\Ability\Labelable::useSeriesLabels()</a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$seriesTitle</h4></div>
+</div></div>
+</div>
+<a id="method_useZooming"></a><div class="element clickable method public method_useZooming" data-toggle="collapse" data-target=".method_useZooming .collapse">
+<h2>(non-PHPdoc)</h2>
+<pre>useZooming(array $options) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="JsWriter.Ability.Zoomable.html#%5CAltamira%5CJsWriter%5CAbility%5CZoomable::useZooming()">\Altamira\JsWriter\Ability\Zoomable::useZooming()</a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$options</h4></div>
+</div></div>
+</div>
+<a id="method_getCallbackPlaceholder"></a><div class="element clickable method protected method_getCallbackPlaceholder" data-toggle="collapse" data-target=".method_getCallbackPlaceholder .collapse">
+<h2>Registers a callback with the JsWriter and returns a key referencing it.</h2>
+<pre>getCallbackPlaceholder(\Altamira\JsWriter\unknown_type $callback) : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Used for find/replace during JSification</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::getCallbackPlaceholder()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$callback</h4>
+<code>\Altamira\JsWriter\unknown_type</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getNestedOptVal"></a><div class="element clickable method protected method_getNestedOptVal" data-toggle="collapse" data-target=".method_getNestedOptVal .collapse">
+<h2>Allows you to get the value for discretely infinite nesting without notices
+by returning null without a warning if it doesn't exist</h2>
+<pre>getNestedOptVal(array $options) : mixed</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::getNestedOptVal()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>mixed</code></div>
+</div></div>
+</div>
+<a id="method_getOptVal"></a><div class="element clickable method protected method_getOptVal" data-toggle="collapse" data-target=".method_getOptVal .collapse">
+<h2>Retrieves a nested value or null</h2>
+<pre>getOptVal(array $opts, mixed $option) : \Altamira\JsWriter\Ambigous</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$opts</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$option</h4>
+<code>mixed</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Altamira\JsWriter\Ambigous</code><>|NULL|multitype:</div>
+</div></div>
+</div>
+<a id="method_getSeriesTitle"></a><div class="element clickable method protected method_getSeriesTitle" data-toggle="collapse" data-target=".method_getSeriesTitle .collapse">
+<h2>supports accessing series values by instance or title</h2>
+<pre>getSeriesTitle(string | <a href="../classes/Altamira.Series.html">\Altamira\Series</a> $series) : string</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::getSeriesTitle()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$series</h4>
+<code>string</code><code><a href="../classes/Altamira.Series.html">\Altamira\Series</a></code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_setNestedOptVal"></a><div class="element clickable method protected method_setNestedOptVal" data-toggle="collapse" data-target=".method_setNestedOptVal .collapse">
+<h2>Allows you to set discretely infinite nesting without notices
+by creating an empty array for key values that don't already exist</h2>
+<pre>setNestedOptVal(array $options) : <a href="../classes/Altamira.JsWriter.JsWriterAbstract.html">\Altamira\JsWriter\JsWriterAbstract</a></pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::setNestedOptVal()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code><a href="../classes/Altamira.JsWriter.JsWriterAbstract.html">\Altamira\JsWriter\JsWriterAbstract</a></code></div>
+</div></div>
+</div>
+<a id="method_setOpt"></a><div class="element clickable method protected method_setOpt" data-toggle="collapse" data-target=".method_setOpt .collapse">
+<h2>Sets a value in a nested array based on a dot-concatenated string
+Used primarily for mapping</h2>
+<pre>setOpt(array $opts, string $mapperString, mixed $val) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$opts</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$mapperString</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$val</h4>
+<code>mixed</code>
+</div>
+</div></div>
+</div>
+<a id="method_unsetOpt"></a><div class="element clickable method protected method_unsetOpt" data-toggle="collapse" data-target=".method_unsetOpt .collapse">
+<h2>Handles nested mappings</h2>
+<pre>unsetOpt(array $opts, string $mapperString) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$opts</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$mapperString</h4>
+<code>string</code>
+</div>
+</div></div>
+</div>
+<h3>
+<i class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_callbacks"> </a><div class="element clickable property protected property_callbacks" data-toggle="collapse" data-target=".property_callbacks .collapse">
+<h2></h2>
+<pre>$callbacks : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::$$callbacks</td>
+</tr></table>
+</div></div>
+</div>
+<a id="property_chart"> </a><div class="element clickable property protected property_chart" data-toggle="collapse" data-target=".property_chart .collapse">
+<h2></h2>
+<pre>$chart : <a href="../classes/Altamira.Chart.html">\Altamira\Chart</a></pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Each JsWriter is responsible for a single chart.</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::$$chart</td>
+</tr></table>
+</div></div>
+</div>
+<a id="property_dateAxes"> </a><div class="element clickable property protected property_dateAxes" data-toggle="collapse" data-target=".property_dateAxes .collapse">
+<h2></h2>
+<pre>$dateAxes </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_files"> </a><div class="element clickable property protected property_files" data-toggle="collapse" data-target=".property_files .collapse">
+<h2></h2>
+<pre>$files : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::$$files</td>
+</tr></table>
+</div></div>
+</div>
+<a id="property_highlighting"> </a><div class="element clickable property protected property_highlighting" data-toggle="collapse" data-target=".property_highlighting .collapse">
+<h2></h2>
+<pre>$highlighting </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_labelSettings"> </a><div class="element clickable property protected property_labelSettings" data-toggle="collapse" data-target=".property_labelSettings .collapse">
+<h2></h2>
+<pre>$labelSettings </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_library"> </a><div class="element clickable property protected property_library" data-toggle="collapse" data-target=".property_library .collapse">
+<h2></h2>
+<pre>$library : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>Required when writing a new class.</p></div></div></div>
+</div>
+<a id="property_options"> </a><div class="element clickable property protected property_options" data-toggle="collapse" data-target=".property_options .collapse">
+<h2></h2>
+<pre>$options : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Stored here to make it easier to json-encode.</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::$$options</td>
+</tr></table>
+</div></div>
+</div>
+<a id="property_pointLabels"> </a><div class="element clickable property protected property_pointLabels" data-toggle="collapse" data-target=".property_pointLabels .collapse">
+<h2></h2>
+<pre>$pointLabels </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_typeNamespace"> </a><div class="element clickable property protected property_typeNamespace" data-toggle="collapse" data-target=".property_typeNamespace .collapse">
+<h2></h2>
+<pre>$typeNamespace : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_types"> </a><div class="element clickable property protected property_types" data-toggle="collapse" data-target=".property_types .collapse">
+<h2></h2>
+<pre>$types : array</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>A type registered as 'default' will work for all series that don't have a series registered.</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::$$types</td>
+</tr></table>
+</div></div>
+</div>
+<a id="property_useLabels"> </a><div class="element clickable property protected property_useLabels" data-toggle="collapse" data-target=".property_useLabels .collapse">
+<h2></h2>
+<pre>$useLabels : boolean</pre>
+<div class="labels"><span class="label">Inherited</span></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Doesn't matter much unless you implement Labelable</p></div>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>\Altamira\JsWriter\JsWriterAbstract::$$useLabels</td>
+</tr></table>
+</div></div>
+</div>
+<a id="property_zooming"> </a><div class="element clickable property protected property_zooming" data-toggle="collapse" data-target=".property_zooming .collapse">
+<h2></h2>
+<pre>$zooming </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_nativeOpts"> </a><div class="element clickable property private property_nativeOpts" data-toggle="collapse" data-target=".property_nativeOpts .collapse">
+<h2></h2>
+<pre>$nativeOpts </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_optsMapper"> </a><div class="element clickable property private property_optsMapper" data-toggle="collapse" data-target=".property_optsMapper .collapse">
+<h2></h2>
+<pre>$optsMapper </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<h3>
+<i class="icon-custom icon-constant"></i> Constants</h3>
+<a id="constant_HIGHLIGHTING_FUNCTION"> </a><div class="element clickable constant  constant_HIGHLIGHTING_FUNCTION" data-toggle="collapse" data-target=".constant_HIGHLIGHTING_FUNCTION .collapse">
+<h2>HIGHLIGHTING_FUNCTION</h2>
+<pre>HIGHLIGHTING_FUNCTION </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_LABELS_FUNCTION"> </a><div class="element clickable constant  constant_LABELS_FUNCTION" data-toggle="collapse" data-target=".constant_LABELS_FUNCTION .collapse">
+<h2>LABELS_FUNCTION</h2>
+<pre>LABELS_FUNCTION </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_LIBRARY"> </a><div class="element clickable constant  constant_LIBRARY" data-toggle="collapse" data-target=".constant_LIBRARY .collapse">
+<h2>LIBRARY</h2>
+<pre>LIBRARY </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_SCRIPT_OUTPUT"> </a><div class="element clickable constant  constant_SCRIPT_OUTPUT" data-toggle="collapse" data-target=".constant_SCRIPT_OUTPUT .collapse">
+<h2>SCRIPT_OUTPUT</h2>
+<pre>SCRIPT_OUTPUT </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_ZOOMING_FUNCTION"> </a><div class="element clickable constant  constant_ZOOMING_FUNCTION" data-toggle="collapse" data-target=".constant_ZOOMING_FUNCTION .collapse">
+<h2>ZOOMING_FUNCTION</h2>
+<pre>ZOOMING_FUNCTION </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div></div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.0.0a12</a> and<br>
+            generated on 2013-01-03T20:34:56-08:00.<br></footer></div>
+</div>
+</body>
+</html>

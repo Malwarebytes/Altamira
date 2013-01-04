@@ -4,6 +4,8 @@ namespace Altamira\Type\Flot;
 
 class Bar extends \Altamira\Type\TypeAbstract
 {
+    
+    const TYPE = 'bar';
 
     protected $options = array('series'=>array('lines'    =>    array('show' => false),
                                                  'bars'     =>    array('show' => true),

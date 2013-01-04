@@ -67,7 +67,7 @@ class SeriesTest extends PHPUnit_Framework_TestCase
         );
         
         $this   ->mockJqPlotWriter
-                ->expects          ( $this->once() )
+                ->expects          ( $this->atLeastOnce() )
                 ->method           ( 'initializeSeries' );
         
         $series = new Series( $this->data, 'Foo', $this->mockJqPlotWriter );
@@ -117,6 +117,12 @@ class SeriesTest extends PHPUnit_Framework_TestCase
                 $series->getTitle(),
                 '\Altamira\Series::setTitle() should set at title that can be retrieved with \Altamira\Series::getTitle()'
         ); 
+
+        $titlelessSeries = new \Altamira\Series( $this->data, null, $this->mockJqPlotWriter );
+        $this->assertRegExp(
+                '/Series \d+/',
+                $titlelessSeries->getTitle()
+        );
         
     }
     

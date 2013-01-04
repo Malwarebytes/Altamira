@@ -6,9 +6,8 @@ namespace Altamira\Type\Flot;
 
 class Donut extends Pie
 {
+    const TYPE = 'donut';
     
     protected $options = array('series' => array('pie' => array('show' => true, 'innerRadius' => 0.5)));
-    
-    
     
 }

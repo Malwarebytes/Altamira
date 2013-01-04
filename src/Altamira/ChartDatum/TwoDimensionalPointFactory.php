@@ -14,7 +14,7 @@ class TwoDimensionalPointFactory
      * @param array|null $result
      * @return array of \Altamira\ChartDatum\TwoDimensionalPoint
      */
-    public static function getFromYValues( $oneDimensionalArray, $result = array() ) {
+    public static function getFromYValues( $oneDimensionalArray, &$result = array() ) {
         foreach ($oneDimensionalArray as $x => $y ) 
         {
             $result[] = new TwoDimensionalPoint( array('x' => $x+1, 'y' => $y ) );
@@ -30,7 +30,7 @@ class TwoDimensionalPointFactory
      * @param array|null $result
      * @return array of \Altamira\ChartDatum\TwoDimensionalPoint
      */
-    public static function getFromXValues( $oneDimensionalArray, $result = array() ) {
+    public static function getFromXValues( $oneDimensionalArray, &$result = array() ) {
         foreach ($oneDimensionalArray as $y => $x ) 
         {
             $result[] = new TwoDimensionalPoint( array('x' => $x, 'y' => $y+1 ) );
@@ -45,7 +45,7 @@ class TwoDimensionalPointFactory
      * @param array $result
      * @return \Altamira\ChartDatum\TwoDimensionalPoint
      */
-    public static function getFromNested( $nestedArray, $result = array() ) {
+    public static function getFromNested( $nestedArray, &$result = array() ) {
         foreach ( $nestedArray as $array ) 
         {
             $result[] = new TwoDimensionalPoint( array('x' => $array[0], 'y' => $array[1] ) );
