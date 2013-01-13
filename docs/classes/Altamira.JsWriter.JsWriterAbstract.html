@@ -1,0 +1,504 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>phpDocumentor » \Altamira\JsWriter\JsWriterAbstract</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">phpDocumentor</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Namespaces</a></li>
+<li><a href="../namespaces/Altamira.html"><i class="icon-th"></i> Altamira</a></li>
+<li><a>Packages</a></li>
+<li><a href="../packages/ChartDatum.html"><i class="icon-folder-open"></i> ChartDatum</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/JsWriter.html"><i class="icon-folder-open"></i> JsWriter</a></li>
+<li><a href="../packages/Type.html"><i class="icon-folder-open"></i> Type</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">0</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul><li>todo 
+                <span class="label label-info">2</span>
+</li></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">0</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<span class="btn-group visibility" data-toggle="buttons-checkbox"><button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button></span><div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+<ul class="side-nav nav nav-list">
+<li class="nav-header">
+<i class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method___construct" title="__construct :: Constructor method."><span class="description">Constructor method.</span><pre>__construct()</pre></a></li>
+<li class="method public "><a href="#method_getFiles" title="getFiles :: Returns an array of files required to render the chart
+Includes the default files, as well as any files registered by type
+It's important to note that some methods in concrete classes will add additional files to this instance"><span class="description">Returns an array of files required to render the chart
+Includes the default files, as well as any files registered by type
+It's important to note that some methods in concrete classes will add additional files to this instance</span><pre>getFiles()</pre></a></li>
+<li class="method public "><a href="#method_getLibrary" title="getLibrary :: This is used to differentiate jsWriters of different kinds using a string name"><span class="description">This is used to differentiate jsWriters of different kinds using a string name</span><pre>getLibrary()</pre></a></li>
+<li class="method public "><a href="#method_getOption" title="getOption :: Returns global options stored in the JsWriter instance."><span class="description">Returns global options stored in the JsWriter instance.</span><pre>getOption()</pre></a></li>
+<li class="method public "><a href="#method_getOptionsForSeries" title="getOptionsForSeries :: Returns the options for a series"><span class="description">Returns the options for a series</span><pre>getOptionsForSeries()</pre></a></li>
+<li class="method public "><a href="#method_getScript" title="getScript :: Responsible for generating JavaScript"><span class="description">Responsible for generating JavaScript</span><pre>getScript()</pre></a></li>
+<li class="method public "><a href="#method_getSeriesOption" title="getSeriesOption :: Returns an option for a specific series."><span class="description">Returns an option for a specific series.</span><pre>getSeriesOption()</pre></a></li>
+<li class="method public "><a href="#method_getType" title="getType :: Returns the type instance for the provided key"><span class="description">Returns the type instance for the provided key</span><pre>getType()</pre></a></li>
+<li class="method public "><a href="#method_initializeSeries" title="initializeSeries :: Initializes the storage location using the series title as a key"><span class="description">Initializes the storage location using the series title as a key</span><pre>initializeSeries()</pre></a></li>
+<li class="method public "><a href="#method_setOption" title="setOption :: Sets a global option for JS rendering"><span class="description">Sets a global option for JS rendering</span><pre>setOption()</pre></a></li>
+<li class="method public "><a href="#method_setSeriesOption" title="setSeriesOption :: Set a series-specific value for rendering JS"><span class="description">Set a series-specific value for rendering JS</span><pre>setSeriesOption()</pre></a></li>
+<li class="method public "><a href="#method_setType" title="setType :: Returns an type that has not yet been registered."><span class="description">Returns an type that has not yet been registered.</span><pre>setType()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="method protected "><a href="#method_getCallbackPlaceholder" title="getCallbackPlaceholder :: Registers a callback with the JsWriter and returns a key referencing it."><span class="description">Registers a callback with the JsWriter and returns a key referencing it.</span><pre>getCallbackPlaceholder()</pre></a></li>
+<li class="method protected "><a href="#method_getNestedOptVal" title="getNestedOptVal :: Allows you to get the value for discretely infinite nesting without notices
+by returning null without a warning if it doesn't exist"><span class="description">Allows you to get the value for discretely infinite nesting without notices
+by returning null without a warning if it doesn't exist</span><pre>getNestedOptVal()</pre></a></li>
+<li class="method protected "><a href="#method_getOptionsJS" title="getOptionsJS :: This wraps makeJSArray with hooks required to form the JS"><span class="description">This wraps makeJSArray with hooks required to form the JS</span><pre>getOptionsJS()</pre></a></li>
+<li class="method protected "><a href="#method_getSeriesTitle" title="getSeriesTitle :: supports accessing series values by instance or title"><span class="description">supports accessing series values by instance or title</span><pre>getSeriesTitle()</pre></a></li>
+<li class="method protected "><a href="#method_makeJSArray" title="makeJSArray :: JSON-encoding with some additional treatments
+-- anything wrapped in hashes will be treated as bare in js (not wrapped in quotes, for example)
+-- callbacks are introduced where they are stored after json-encoding, so that they are evaluated"><span class="description">JSON-encoding with some additional treatments
+-- anything wrapped in hashes will be treated as bare in js (not wrapped in quotes, for example)
+-- callbacks are introduced where they are stored after json-encoding, so that they are evaluated</span><pre>makeJSArray()</pre></a></li>
+<li class="method protected "><a href="#method_setNestedOptVal" title="setNestedOptVal :: Allows you to set discretely infinite nesting without notices
+by creating an empty array for key values that don't already exist"><span class="description">Allows you to set discretely infinite nesting without notices
+by creating an empty array for key values that don't already exist</span><pre>setNestedOptVal()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header protected">» Protected
+                    <ul>
+<li class="property protected "><a href="#property_callbacks" title="$callbacks :: Stores JavaScript callbacks required to render the registered chart"><span class="description"></span><pre>$callbacks</pre></a></li>
+<li class="property protected "><a href="#property_chart" title="$chart :: The chart instance this JsWriter interacts with."><span class="description"></span><pre>$chart</pre></a></li>
+<li class="property protected "><a href="#property_files" title="$files :: Stores files that are required to properly render the registered chart"><span class="description"></span><pre>$files</pre></a></li>
+<li class="property protected "><a href="#property_library" title="$library :: String name of JsWriter library."><span class="description"></span><pre>$library</pre></a></li>
+<li class="property protected "><a href="#property_options" title="$options :: Global and chart-specific options."><span class="description"></span><pre>$options</pre></a></li>
+<li class="property protected "><a href="#property_typeNamespace" title="$typeNamespace :: The namespace where type classes are stored for the concrete class"><span class="description"></span><pre>$typeNamespace</pre></a></li>
+<li class="property protected "><a href="#property_types" title="$types :: Registry for types that may require different rendering."><span class="description"></span><pre>$types</pre></a></li>
+<li class="property protected "><a href="#property_useLabels" title="$useLabels :: A flag for whether to use labels in this JsWriter."><span class="description"></span><pre>$useLabels</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a id="\Altamira\JsWriter\JsWriterAbstract"></a><ul class="breadcrumb">
+<li>
+<a href="../index.html"><i class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li><a href="../namespaces/Altamira.html">Altamira</a></li>
+<li>
+<span class="divider">\</span><a href="../namespaces/Altamira.JsWriter.html">JsWriter</a>
+</li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/Altamira.JsWriter.JsWriterAbstract.html">JsWriterAbstract</a>
+</li>
+</ul>
+<div class="element class">
+<p class="short_description">This class is responsible for aggregating charting options
+and rendering them in JavaScript.</p>
+<div class="details">
+<div class="long_description"><p>There is a one-to-one relationship
+between JsWriters and charts. JsWriters are associated with different
+charting libraries.</p></div>
+<table class="table table-bordered">
+<tr>
+<th>namespace</th>
+<td>\Altamira\JsWriter</td>
+</tr>
+<tr>
+<th>package</th>
+<td><a href="../packages/JsWriter.html">JsWriter</a></td>
+</tr>
+<tr>
+<th>author</th>
+<td><a href="">relwell</a></td>
+</tr>
+</table>
+<h3>
+<i class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct" data-toggle="collapse" data-target=".method___construct .collapse">
+<h2>Constructor method.</h2>
+<pre>__construct(\Altamira\Chart $chart) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Requires the chart to be rendered. Every chart has its own JsWriter instance.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$chart</h4>
+<code><a href="../classes/Altamira.Chart.html">\Altamira\Chart</a></code>
+</div>
+</div></div>
+</div>
+<a id="method_getFiles"></a><div class="element clickable method public method_getFiles" data-toggle="collapse" data-target=".method_getFiles .collapse">
+<h2>Returns an array of files required to render the chart
+Includes the default files, as well as any files registered by type
+It's important to note that some methods in concrete classes will add additional files to this instance</h2>
+<pre>getFiles() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a id="method_getLibrary"></a><div class="element clickable method public method_getLibrary" data-toggle="collapse" data-target=".method_getLibrary .collapse">
+<h2>This is used to differentiate jsWriters of different kinds using a string name</h2>
+<pre>getLibrary() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getOption"></a><div class="element clickable method public method_getOption" data-toggle="collapse" data-target=".method_getOption .collapse">
+<h2>Returns global options stored in the JsWriter instance.</h2>
+<pre>getOption(string $key, mixed $default) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Allows for variable default value.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$key</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$default</h4>
+<code>mixed</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>mixed</code></div>
+</div></div>
+</div>
+<a id="method_getOptionsForSeries"></a><div class="element clickable method public method_getOptionsForSeries" data-toggle="collapse" data-target=".method_getOptionsForSeries .collapse">
+<h2>Returns the options for a series</h2>
+<pre>getOptionsForSeries(<a href="../classes/Altamira.Series.html">\Altamira\Series</a> | string $series) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$series</h4>
+<code><a href="../classes/Altamira.Series.html">\Altamira\Series</a></code><code>string</code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="http://php.net/manual/en/class.exception.php">\Exception</a></code></th>
+<td></td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>mixed</code></div>
+</div></div>
+</div>
+<a id="method_getScript"></a><div class="element clickable method public method_getScript" data-toggle="collapse" data-target=".method_getScript .collapse">
+<h2>Responsible for generating JavaScript</h2>
+<pre>getScript() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getSeriesOption"></a><div class="element clickable method public method_getSeriesOption" data-toggle="collapse" data-target=".method_getSeriesOption .collapse">
+<h2>Returns an option for a specific series.</h2>
+<pre>getSeriesOption(<a href="../classes/Altamira.Series.html">\Altamira\Series</a> | string $series, string $option, mixed $default) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Accepts title or instance.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$series</h4>
+<code><a href="../classes/Altamira.Series.html">\Altamira\Series</a></code><code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$option</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$default</h4>
+<code>mixed</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>mixed</code></div>
+</div></div>
+</div>
+<a id="method_getType"></a><div class="element clickable method public method_getType" data-toggle="collapse" data-target=".method_getType .collapse">
+<h2>Returns the type instance for the provided key</h2>
+<pre>getType(string | <a href="../classes/Altamira.Series.html">\Altamira\Series</a> $series) : \Altamira\JsWriter\multitype: | NULL</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$series</h4>
+<code>string</code><code><a href="../classes/Altamira.Series.html">\Altamira\Series</a></code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\Altamira\JsWriter\multitype:</code><code>NULL</code>
+</div>
+</div></div>
+</div>
+<a id="method_initializeSeries"></a><div class="element clickable method public method_initializeSeries" data-toggle="collapse" data-target=".method_initializeSeries .collapse">
+<h2>Initializes the storage location using the series title as a key</h2>
+<pre>initializeSeries(<a href="../classes/Altamira.Series.html">\Altamira\Series</a> | string $series) : <a href="../classes/Altamira.JsWriter.JsWriterAbstract.html">\Altamira\JsWriter\JsWriterAbstract</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$series</h4>
+<code><a href="../classes/Altamira.Series.html">\Altamira\Series</a></code><code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code><a href="../classes/Altamira.JsWriter.JsWriterAbstract.html">\Altamira\JsWriter\JsWriterAbstract</a></code></div>
+</div></div>
+</div>
+<a id="method_setOption"></a><div class="element clickable method public method_setOption" data-toggle="collapse" data-target=".method_setOption .collapse">
+<h2>Sets a global option for JS rendering</h2>
+<pre>setOption(string $key, mixed $value) : <a href="../classes/Altamira.JsWriter.JsWriterAbstract.html">\Altamira\JsWriter\JsWriterAbstract</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$key</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$value</h4>
+<code>mixed</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code><a href="../classes/Altamira.JsWriter.JsWriterAbstract.html">\Altamira\JsWriter\JsWriterAbstract</a></code></div>
+</div></div>
+</div>
+<a id="method_setSeriesOption"></a><div class="element clickable method public method_setSeriesOption" data-toggle="collapse" data-target=".method_setSeriesOption .collapse">
+<h2>Set a series-specific value for rendering JS</h2>
+<pre>setSeriesOption(string | <a href="../classes/Altamira.Series.html">\Altamira\Series</a> $series, string $name, mixed $value) : <a href="../classes/Altamira.JsWriter.JsWriterAbstract.html">\Altamira\JsWriter\JsWriterAbstract</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$series</h4>
+<code>string</code><code><a href="../classes/Altamira.Series.html">\Altamira\Series</a></code>
+</div>
+<div class="subelement argument">
+<h4>$name</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$value</h4>
+<code>mixed</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code><a href="../classes/Altamira.JsWriter.JsWriterAbstract.html">\Altamira\JsWriter\JsWriterAbstract</a></code></div>
+</div></div>
+</div>
+<a id="method_setType"></a><div class="element clickable method public method_setType" data-toggle="collapse" data-target=".method_setType .collapse">
+<h2>Returns an type that has not yet been registered.</h2>
+<pre>setType(<a href="../classes/Altamira.Type.TypeAbstract.html">\Altamira\Type\TypeAbstract</a> $type, array $options, string | <a href="../classes/Altamira.Series.html">\Altamira\Series</a> $series) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$type</h4>
+<code><a href="../classes/Altamira.Type.TypeAbstract.html">\Altamira\Type\TypeAbstract</a></code>
+</div>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$series</h4>
+<code>string</code><code><a href="../classes/Altamira.Series.html">\Altamira\Series</a></code>
+</div>
+</div></div>
+</div>
+<a id="method_getCallbackPlaceholder"></a><div class="element clickable method protected method_getCallbackPlaceholder" data-toggle="collapse" data-target=".method_getCallbackPlaceholder .collapse">
+<h2>Registers a callback with the JsWriter and returns a key referencing it.</h2>
+<pre>getCallbackPlaceholder(\Altamira\JsWriter\unknown_type $callback) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Used for find/replace during JSification</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$callback</h4>
+<code>\Altamira\JsWriter\unknown_type</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_getNestedOptVal"></a><div class="element clickable method protected method_getNestedOptVal" data-toggle="collapse" data-target=".method_getNestedOptVal .collapse">
+<h2>Allows you to get the value for discretely infinite nesting without notices
+by returning null without a warning if it doesn't exist</h2>
+<pre>getNestedOptVal(array $options, mixed $arg) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$arg</h4>
+<code>mixed</code><p>the first of any number of arguments to nest through an array, the final of which being the value to return</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>mixed</code></div>
+</div></div>
+</div>
+<a id="method_getOptionsJS"></a><div class="element clickable method protected method_getOptionsJS" data-toggle="collapse" data-target=".method_getOptionsJS .collapse">
+<h2>This wraps makeJSArray with hooks required to form the JS</h2>
+<pre>getOptionsJS() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getSeriesTitle"></a><div class="element clickable method protected method_getSeriesTitle" data-toggle="collapse" data-target=".method_getSeriesTitle .collapse">
+<h2>supports accessing series values by instance or title</h2>
+<pre>getSeriesTitle(string | <a href="../classes/Altamira.Series.html">\Altamira\Series</a> $series) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$series</h4>
+<code>string</code><code><a href="../classes/Altamira.Series.html">\Altamira\Series</a></code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_makeJSArray"></a><div class="element clickable method protected method_makeJSArray" data-toggle="collapse" data-target=".method_makeJSArray .collapse">
+<h2>JSON-encoding with some additional treatments
+-- anything wrapped in hashes will be treated as bare in js (not wrapped in quotes, for example)
+-- callbacks are introduced where they are stored after json-encoding, so that they are evaluated</h2>
+<pre>makeJSArray(array $array) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$array</h4>
+<code>array</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a id="method_setNestedOptVal"></a><div class="element clickable method protected method_setNestedOptVal" data-toggle="collapse" data-target=".method_setNestedOptVal .collapse">
+<h2>Allows you to set discretely infinite nesting without notices
+by creating an empty array for key values that don't already exist</h2>
+<pre>setNestedOptVal(array $options, mixed $arg) : <a href="../classes/Altamira.JsWriter.JsWriterAbstract.html">\Altamira\JsWriter\JsWriterAbstract</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>array</code><p>the option array to operate against</p></div>
+<div class="subelement argument">
+<h4>$arg</h4>
+<code>mixed</code><p>the first any number of arguments to nest through an array, the final of which being the value to set</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code><a href="../classes/Altamira.JsWriter.JsWriterAbstract.html">\Altamira\JsWriter\JsWriterAbstract</a></code></div>
+</div></div>
+</div>
+<h3>
+<i class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_callbacks"> </a><div class="element clickable property protected property_callbacks" data-toggle="collapse" data-target=".property_callbacks .collapse">
+<h2></h2>
+<pre>$callbacks : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_chart"> </a><div class="element clickable property protected property_chart" data-toggle="collapse" data-target=".property_chart .collapse">
+<h2></h2>
+<pre>$chart : <a href="../classes/Altamira.Chart.html">\Altamira\Chart</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>Each JsWriter is responsible for a single chart.</p></div></div></div>
+</div>
+<a id="property_files"> </a><div class="element clickable property protected property_files" data-toggle="collapse" data-target=".property_files .collapse">
+<h2></h2>
+<pre>$files : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_library"> </a><div class="element clickable property protected property_library" data-toggle="collapse" data-target=".property_library .collapse">
+<h2></h2>
+<pre>$library : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>Required when writing a new class.</p></div></div></div>
+</div>
+<a id="property_options"> </a><div class="element clickable property protected property_options" data-toggle="collapse" data-target=".property_options .collapse">
+<h2></h2>
+<pre>$options : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>Stored here to make it easier to json-encode.</p></div></div></div>
+</div>
+<a id="property_typeNamespace"> </a><div class="element clickable property protected property_typeNamespace" data-toggle="collapse" data-target=".property_typeNamespace .collapse">
+<h2></h2>
+<pre>$typeNamespace : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_types"> </a><div class="element clickable property protected property_types" data-toggle="collapse" data-target=".property_types .collapse">
+<h2></h2>
+<pre>$types : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>A type registered as 'default' will work for all series that don't have a series registered.</p></div></div></div>
+</div>
+<a id="property_useLabels"> </a><div class="element clickable property protected property_useLabels" data-toggle="collapse" data-target=".property_useLabels .collapse">
+<h2></h2>
+<pre>$useLabels : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>Doesn't matter much unless you implement Labelable</p></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.0.0a12</a> and<br>
+            generated on 2013-01-10T17:11:26-08:00.<br></footer></div>
+</div>
+</body>
+</html>

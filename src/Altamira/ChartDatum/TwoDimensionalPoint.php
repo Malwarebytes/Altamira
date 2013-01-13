@@ -1,13 +1,15 @@
 <?php 
-
+/**
+ * Class definition for \Altamira\ChartDatum\TwoDimensionalPoint
+ * @author relwell
+ */
 namespace Altamira\ChartDatum;
 
 /**
  * Class for abstracting chart data with an X, a Y, and a label.
  * @author relwell
- *
+ * @package ChartDatum
  */
-
 class TwoDimensionalPoint extends ChartDatumAbstract
 {
     /**
@@ -31,8 +33,10 @@ class TwoDimensionalPoint extends ChartDatumAbstract
     }
     
     /**
-     * (non-PHPdoc)
+     * Provides the data prepared for json encoding
      * @see Altamira\ChartDatum.ChartDatumAbstract::getRenderData
+     * @param bool $useLabel whether to include the label for this point
+     * @return array 
      */
     public function getRenderData( $useLabel = false )
     {

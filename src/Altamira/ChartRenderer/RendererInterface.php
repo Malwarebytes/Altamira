@@ -1,9 +1,14 @@
 <?php
-
+/**
+ * Class definition for \Altamira\ChartRenderer\RendererInterface
+ * @author relwell
+ *
+ */
 namespace Altamira\ChartRenderer;
 
 /**
  * Builds a standard interface about how we render HTML items
+ * This interface allows for opening and closing tags around other logic, as well as style
  */
 interface RendererInterface
 {

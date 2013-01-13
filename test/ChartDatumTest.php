@@ -70,7 +70,9 @@ class ChartDatumTest extends PHPUnit_Framework_TestCase
             ->will   ( $this->returnValue( 'foo' ) )
         ;
         
-        $mockDonutType = $this->getMock( '\Altamira\Type\Flot\Donut', array(), array( $mockJsWriter ) );
+        $mockDonutType = $this->getMockBuilder( '\Altamira\Type\Flot\Donut' )
+                              ->disableOriginalConstructor()
+                              ->getMock();
         
         $point->setSeries( $mockSeries );
         

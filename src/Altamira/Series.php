@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Class definition for \Altamira\Series
+ * @author relwell
+ */
 namespace Altamira;
 
 use Altamira\JsWriter\JsWriterAbstract;
@@ -116,7 +119,8 @@ class Series
 	}
 
 	/**
-	 * 
+	 * Sets a string value for the title of the chart.
+	 * We can supress the display of a title value with hideTitle()
 	 * @param string $title
 	 * @return \Altamira\Series
 	 */
@@ -136,6 +140,10 @@ class Series
 	{
 	    if ($this->jsWriter instanceOf \Altamira\JsWriter\Ability\Labelable) {
     		$this->jsWriter->useSeriesLabels( $this->getTitle(), $labels);
+	    }
+	    
+	    for ( $i = 0; $i < count( $labels ) && $i < count( $this->data ); $i++ ) {
+	        $this->data[$i]->setLabel( $labels[$i] );
 	    }
 
 		return $this;

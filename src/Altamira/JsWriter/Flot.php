@@ -1,10 +1,20 @@
 <?php
-
+/**
+ * Class definition for \Altmaira\JsWriter\Flot
+ * @author relwell
+ */
 namespace Altamira\JsWriter;
-
 use Altamira\JsWriter\Ability;
 use Altamira\ChartDatum;
-
+/**
+ * JsWriter responsible for storing options and rendering
+ * values to cause JqPlot to render a specific chart.
+ * Generally, these method calls will be encapsulated by the 
+ * chart that registers its own JsWriter upon instantiation.
+ * @namespace \Altamira\JsWriter
+ * @package JsWriter
+ * @author relwell
+ */
 class Flot
     extends JsWriterAbstract
     implements Ability\Cursorable,
@@ -18,24 +28,59 @@ class Flot
                Ability\Labelable,
                Ability\Lineable
 {
+    /**
+     * Identifies the string value of which library this jsWriter is responsible for
+     * @var string
+     */
     const LIBRARY = 'flot';
     
-    protected $library = 'flot';
+    /**
+     * Used to identify the type namespace for this particualr JsWriter 
+     * @var string
+     */
     protected $typeNamespace = '\\Altamira\\Type\\Flot\\';
 
+    /**
+     * Used to track whether dates have been registered on this chart
+     * @var array
+     */
     protected $dateAxes = array('x'=>false, 'y'=>false);
+    
+    /**
+     * Used to track whether zooming has been set
+     * @var bool
+     */
     protected $zooming = false;
+    
+    /**
+     * Used to track whether highlighting has been set
+     * @var bool
+     */
     protected $highlighting = false;
+    
+    /**
+     * Stores labels for each point
+     * @var array
+     */
     protected $pointLabels = array();
+    
+    /**
+     * Stores settings for label placement
+     * @var array
+     */
     protected $labelSettings = array('location'=>'w','xpadding'=>'0','ypadding'=>'0');
 
-    protected function generateScript()
+    /**
+     * (non-PHPdoc)
+     * @see \Altamira\JsWriter\JsWriterAbstract::getScript()
+     */
+    public function getScript()
     {
         $name = $this->chart->getName();
         $dataArrayJs = '[';
 
         $counter = 0;
-        foreach ($this->chart->getSeries() as $title=>$series) {
+        foreach ( $this->chart->getSeries() as $title => $series ) {
 
             $dataArrayJs .= $counter++ > 0 ? ', ' : '';
 
@@ -44,36 +89,21 @@ class Flot
             // associate Xs with Ys in cases where we need it
             $data = $series->getData();
 
-            $oneDimensional = array_keys($data) == range(0, count($data)-1, 1);
-
-            if (! empty($this->seriesLabels[$title]) ) {
-                $labelCopy = $this->seriesLabels[$title];
-            }
             $formattedData = array();
-            foreach ($data as $datum) { 
+            foreach ( $data as $datum ) { 
                 if (! $datum instanceof ChartDatum\ChartDatumAbstract ) {
                     throw new \UnexpectedValueException('Chart data should be an object inheriting from ChartDatumAbstract');
                 }
-                foreach ($this->dateAxes as $axis=>$flag) { 
-                    if ($flag) {
-                        //@todo we can probably accomplish this with less iterations
-                        switch ($axis) {
-                            case 'x':                                
-                                $date = \DateTime::createFromFormat('m/d/Y', $datum['x']);
-                                $datum['x'] = $date->getTimestamp() * 1000;
-                                break;
-                            case 'y':
-                                $date = \DateTime::createFromFormat('m/d/Y', $datum['y']);
-                                $datum['y'] = $date->getTimestamp() * 1000;
-                                break;
-                        }
+                foreach ( $this->dateAxes as $axis => $flag ) {
+                    if ( $flag ) {
+                        $date = \DateTime::createFromFormat( 'm/d/Y', $datum[$axis] );
+                        $datum[$axis] = $date->getTimestamp() * 1000;
                     }
                 }
                         
-                if (!empty($this->seriesLabels[$title])) {
+                if ( $this->useLabels ) {
                     $dataPoints = "{$datum['x']},{$datum['y']}";
-                    $datum->setLabel( $labelCopy );
-                    $this->pointLabels[$dataPoints] = array_shift($labelCopy);
+                    $this->pointLabels[$dataPoints] = $datum->getLabel();
                 }
                 
                 $formattedData[] = $datum->getRenderData();
@@ -81,15 +111,15 @@ class Flot
             
             $dataArrayJs .= 'data: '.$this->makeJSArray($formattedData);
             
-            if (isset($this->types['default']) && 
-               ($this->types['default'] instanceOf \Altamira\Type\Flot\Bubble
+            if ( isset( $this->types['default'] ) && 
+               ( $this->types['default'] instanceOf \Altamira\Type\Flot\Bubble
                 || $this->types['default'] instanceOf \Altamira\Type\Flot\Donut ) ) {
                 $dataArrayJs .= ', label: "' . str_replace('"', '\\"', $series->getTitle() ) . '"';
             }
 
             $this->prepOpts( $this->options['seriesStorage'][$title] );
 
-            $opts = substr(json_encode($this->options['seriesStorage'][$title]), 1, -1);
+            $opts = substr( json_encode( $this->options['seriesStorage'][$title] ), 1, -1 );
 
             if (strlen($opts) > 2) {
                 $dataArrayJs .= ',' . $opts;
@@ -98,40 +128,27 @@ class Flot
             $dataArrayJs .= '}';
         }
 
-
         $dataArrayJs .= ']';
 
         $optionsJs = ($js = $this->getOptionsJs()) ? ", {$js}" : ', {}';
 
         $extraFunctionCallString = implode("\n", $this->getExtraFunctionCalls($dataArrayJs, $optionsJs));
 
-        return <<<ENDSCRIPT
-jQuery(document).ready(function() {
-    var placeholder = jQuery('#{$name}');
-    var plot = jQuery.plot(placeholder, {$dataArrayJs}{$optionsJs});
-    {$extraFunctionCallString}
-});
-
-ENDSCRIPT;
-
+        return sprintf( self::SCRIPT_OUTPUT, $name, $dataArrayJs, $optionsJs, $extraFunctionCallString );
     }
 
+    /**
+     * Populates script output with hacks required to give Flot featural parity with jqPlot
+     * @param unknown_type $dataArrayJs
+     * @param unknown_type $optionsJs
+     * @return multitype:string
+     */
     public function getExtraFunctionCalls($dataArrayJs, $optionsJs)
     {
         $extraFunctionCalls = array();
 
         if ($this->zooming) {
-            $extraFunctionCalls[] = <<<ENDJS
-placeholder.bind("plotselected", function (event, ranges) {
-    jQuery.plot(placeholder, {$dataArrayJs},
-      $.extend(true, {}{$optionsJs}, {
-      xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to },
-      yaxis: { min: ranges.yaxis.from, max: ranges.yaxis.to }
-  }));
-});
-placeholder.on('dblclick', function(){ plot.clearSelection(); jQuery.plot(placeholder, {$dataArrayJs}{$optionsJs}); });
-ENDJS;
-
+            $extraFunctionCalls[] = sprintf( self::ZOOMING_FUNCTION, $dataArrayJs, $optionsJs, $dataArrayJs, $optionsJs );
         }
 
         if ($this->useLabels) {
@@ -160,28 +177,11 @@ ENDJS;
             $paddingx = '-'.(isset($this->labelSettings['xpadding']) ? $this->labelSettings['xpadding'] : '0');
             $paddingy = '-'.(isset($this->labelSettings['ypadding']) ? $this->labelSettings['ypadding'] : '0');
 
-            $extraFunctionCalls[] = <<<ENDJS
-var pointLabels = {$seriesLabels};
-
-$.each(plot.getData()[0].data, function(i, el){
-    var o = plot.pointOffset({
-        x: el[0], y: el[1]});
-        $('<div class="data-point-label">' + pointLabels[el[0] + ',' + el[1]] + '</div>').css( {
-            position: 'absolute',
-            left: o.left{$left}{$paddingx},
-            top: o.top-5{$top}{$paddingy},
-            display: 'none',
-            'font-size': '10px'
-        }).appendTo(plot.getPlaceholder()).fadeIn('slow');
-});
-ENDJS;
+            $extraFunctionCalls[] = sprintf( self::LABELS_FUNCTION, $seriesLabels, $left, $paddingx, $top, $paddingy );
 
         }
 
         if ($this->highlighting) {
-
-            $labelPaddingX = 5;
-            $labelPaddingY = 5;
 
             $formatPoints = "x + ',' + y";
 
@@ -191,42 +191,7 @@ ENDJS;
                 }
             }
 
-            $extraFunctionCalls[] =  <<<ENDJS
-
-function showTooltip(x, y, contents) {
-    $('<div id="flottooltip">' + contents + '</div>').css( {
-        position: 'absolute',
-        display: 'none',
-        top: y + {$labelPaddingY},
-        left: x + {$labelPaddingX},
-        border: '1px solid #fdd',
-        padding: '2px',
-        'background-color': '#fee',
-        opacity: 0.80
-    }).appendTo("body").fadeIn(200);
-}
-
-var previousPoint = null;
-
-placeholder.bind("plothover", function (event, pos, item) {
-    if (item) {
-        if (previousPoint != item.dataIndex) {
-            previousPoint = item.dataIndex;
-
-            $("#flottooltip").remove();
-            var x = item.datapoint[0].toFixed(2),
-                y = item.datapoint[1].toFixed(2);
-
-            showTooltip(item.pageX, item.pageY,
-                        {$formatPoints});
-        }
-    }
-    else {
-        $("#flottooltip").remove();
-        previousPoint = null;
-    }
-});
-ENDJS;
+            $extraFunctionCalls[] =  sprintf( self::HIGHLIGHTING_FUNCTION, $formatPoints );
 
         }
 
@@ -234,21 +199,28 @@ ENDJS;
 
     }
 
+    /**
+     * Sets an option for a given axis
+     * @param string $axis
+     * @param string $name
+     * @param mixed $value
+     * @return \Altamira\JsWriter\Flot
+     */
     public function setAxisOptions($axis, $name, $value)
     {
-        if(strtolower($axis) === 'x' || strtolower($axis) === 'y') {
+        if( strtolower($axis) === 'x' || strtolower($axis) === 'y' ) {
             $axis = strtolower($axis) . 'axis';
 
-            if (isset($this->nativeOpts[$axis][$name])) {
-                $this->options[$axis][$name] = $value;
+            if ( array_key_exists( $name, $this->nativeOpts[$axis] ) ) {
+                $this->setNestedOptVal( $this->options, $axis, $name, $value );
             } else {
                 $key = 'axes.'.$axis.'.'.$name;
 
-                if (isset($this->optsMapper[$key])) {
+                if ( isset( $this->optsMapper[$key] ) ) {
                     $this->setOpt($this->options, $this->optsMapper[$key], $value);
                 }
 
-                if ($name == 'formatString') {
+                if ( $name == 'formatString' ) {
                     $this->options[$axis]['tickFormatter'] = $this->getCallbackPlaceholder('function(val, axis){return "'.$value.'".replace(/%d/, val);}');
                 }
 
@@ -258,50 +230,25 @@ ENDJS;
         return $this;
     }
 
-    protected function getTypeOptions(array $options)
+    /**
+     * Registers a series, performing some additional logic
+     * @see \Altamira\JsWriter\JsWriterAbstract::initializeSeries()
+     * @param \Altamira\Series|string $series
+     * @return \Altamira\JsWriter\Flot
+     */
+    public function initializeSeries( $series )
     {
-        $types = $this->types;
-
-        if(isset($types['default'])) {
-            $options = array_merge_recursive($options, $types['default']->getOptions());
-        }
-
-        if(isset($options['axes'])) {
-            foreach($options['axes'] as $axis => $contents) {
-                if(isset($options['axes'][$axis]['renderer']) && is_array($options['axes'][$axis]['renderer'])) {
-                    $options['axes'][$axis]['renderer'] = $options['axes'][$axis]['renderer'][0];
-                }
-            }
-        }
-
-        return $options;
+        parent::initializeSeries($series);
+        $title = $this->getSeriesTitle($series);
+        $this->options['seriesStorage'][$title]['label'] = $title; 
+        return $this;
     }
 
-    protected function getSeriesOptions(array $options)
-    {
-        $types = $this->types;
-
-        if(isset($types['default'])) {
-            array_merge_recursive($options['seriesStorage'], $types['default']->getOptions());
-        }
-
-        $seriesOptions = array();
-        if ( isset( $this->options['seriesStorage'] ) ) { 
-            foreach($this->options['seriesStorage'] as $title => $opts) {
-                if(isset($types[$title])) {
-                    $type = $types[$title];
-                    array_merge_recursive($opts, $type->getSeriesOptions());
-                }
-                $opts['label'] = $title;
-                $seriesOptions[$title] = $opts;
-            }
-        }
-        $options['seriesStorage'] = $seriesOptions;
-
-        return $options;
-    }
-
-    public function getOptionsJS()
+    /**
+     * Mutates the option array to the format required for flot
+     * @return Ambigous <string, mixed>
+     */
+    protected function getOptionsJS()
     {
         foreach ($this->optsMapper as $opt => $mapped)
         {
@@ -314,18 +261,23 @@ ENDJS;
         $opts = $this->options;
 
         // stupid pie plugin
-        if (!isset($opts['seriesStorage']['pie']['show'])) {
-            $opts = array_merge_recursive($opts, array('seriesStorage'=>array('pie'=>array('show'=>false))));
+        if ( $this->getOptVal( $opts, 'seriesStorage', 'pie', 'show' ) === null ) {
+            $this->setNestedOptVal( $opts, 'seriesStorage', 'pie', 'show', false );
         }
-
-        unset($opts['seriesStorage']);
-        unset($opts['seriesDefaults']);
+        
+        $this->unsetOpt( $opts, 'seriesStorage' );
+        $this->unsetOpt( $opts, 'seriesDefault' );
 
         return $this->makeJSArray($opts);
     }
 
-    // these are helper functions to transform jqplot options to flot
-    private function getOptVal(array $opts, $option)
+    /**
+     * Retrieves a nested value or null
+     * @param array $opts
+     * @param mixed $option
+     * @return Ambigous <>|NULL|multitype:
+     */
+    protected function getOptVal(array $opts, $option)
     {
         $ploded = explode('.', $option);
         $arr = $opts;
@@ -341,28 +293,28 @@ ENDJS;
                 return null;
             }
         }
-        return $arr;
     }
 
-    private function setOpt(array &$opts, $mapperString, $val)
+    /**
+     * Sets a value in a nested array based on a dot-concatenated string
+     * Used primarily for mapping
+     * @param array $opts
+     * @param string $mapperString
+     * @param mixed $val
+     */
+    protected function setOpt(array &$opts, $mapperString, $val)
     {
-        $ploded = explode('.', $mapperString);
-        $arr = &$opts;
-        while ($curr = array_shift($ploded)) {
-            if (isset($arr[$curr])) {
-                if (is_array($arr[$curr])) {
-                    $arr = &$arr[$curr];
-                } else {
-                    $arr[$curr] = $val;
-                }
-            } else {
-                $arr[$curr] = empty($ploded) ? $val : array();
-                $arr = &$arr[$curr];
-            }
-        }
+        $args = explode( '.', $mapperString );
+        array_push( $args, $val );
+        $this->setNestedOptVal( $opts, $args ); 
     }
 
-    private function unsetOpt(array &$opts, $mapperString)
+    /**
+     * Handles nested mappings 
+     * @param array $opts
+     * @param string $mapperString
+     */
+    protected function unsetOpt(array &$opts, $mapperString)
     {
         $ploded = explode('.', $mapperString);
         $arr = &$opts;
@@ -377,62 +329,80 @@ ENDJS;
         }
     }
 
+    /**
+     * Implemented from \Altamira\JsWriter\Ability\Highlightable
+     * @see \Altamira\JsWriter\Ability\Highlightable::useHighlighting()
+     * @param array $opts
+     * @return \Altamira\JsWriter\JqPlot
+     */
     public function useHighlighting(array $opts = array('size'=>7.5))
     {
         $this->highlighting = true;
 
-        $this->options['grid']['hoverable'] = true;
-        $this->options['grid']['autoHighlight'] = true;
-
-        return $this;
+        return $this->setNestedOptVal( $this->options, 'grid', 'hoverable', true )
+                    ->setNestedOptVal( $this->options, 'grid', 'autoHighlight', true );
     }
     
     /**
-     * (non-PHPdoc)
+     * Implemented from \Altamira\JsWriter\Ability\Cursorable
      * @see \Altamira\JsWriter\Ability\Cursorable::useCursor()
+     * @return \Altamira\JsWriter\JqPlot
      */
     public function useCursor()
     {
-        $this->options['cursor'] = array('show' => true, 'showTooltip' => true);
-
-        return $this;
+        return $this->setNestedOptVal( $this->options, 'cursor', array('show' => true, 'showTooltip' => true) );
     }
     
     /**
-     * (non-PHPdoc)
+     * formats a given axis for dates
      * @see \Altamira\JsWriter\Ability\Datable::useDates()
+     * @param string $axis
+     * @return \Altamira\JsWriter\Flot
      */
     public function useDates($axis = 'x')
     {
         $this->dateAxes[$axis] = true;
-
-        $this->options[$axis.'axis']['mode'] = 'time';
-        $this->options[$axis.'axis']['timeformat'] = '%d-%b-%y';
+        
+        $this->setNestedOptVal( $this->options, $axis.'axis', 'mode', 'time' );
+        $this->setNestedOptVal( $this->options, $axis.'axis', 'timeformat', '%d-%b-%y' );
 
         array_push($this->files, 'jquery.flot.time.js');
 
         return $this;
     }
 
+    /**
+     * Implemented from \Altamira\JsWriter\Ability\Zoomable
+     * @see \Altamira\JsWriter\Ability\Zoomable::useZooming()
+     * @param array $options
+     * @return \Altamira\JsWriter\Flot
+     */
     public function useZooming( array $options = array('mode'=>'xy') )
     {
         $this->zooming = true;
-        $this->options['selection'] = array('mode' => $options['mode'] );
+        $this->setNestedOptVal( $this->options, 'selection', 'mode', $options['mode'] );
         $this->files[] = 'jquery.flot.selection.js';
+        return $this;
     }
 
+    /**
+     * Implemented from \Altamira\JsWriter\Ability\Griddable
+     * @see \Altamira\JsWriter\Ability\Griddable::setGrid()
+     * @param array $opts
+     * @return \Altamira\JsWriter\Flot
+     */
     public function setGrid(array $opts)
     {
 
         $gridMapping = array('on'=>'show',
                              'background'=>'backgroundColor'
                             );
-
+        
         foreach ($opts as $key=>$value) {
-            if ( in_array($key, $this->nativeOpts['grid']) ) {
-                $this->options['grid'][$key] = $value;
-            } else if ( in_array($key, $gridMapping) ) {
-                $this->options['grid'][$gridMapping[$key]] = $value;
+            if ( array_key_exists( $key, $this->nativeOpts['grid'] ) ) {
+                $this->setNestedOptVal( $this->options, 'grid', $key, $value );
+            } else if ( isset( $gridMapping[$key] ) ) {
+                $this->setNestedOptVal( $this->options, 'grid', $gridMapping[$key], $value );
             }
         }
 
@@ -441,39 +411,44 @@ ENDJS;
     }
     
     /**
-     * (non-PHPdoc)
+     * Implemented from \Altamira\JsWriter\Ability\Legendable
      * @see \Altamira\JsWriter\Ability\Legendable::setLegend()
+     * @param array $opts
+     * @return \Altamira\JsWriter\Flot
      */
     public function setLegend(array $opts = array('on' => 'true', 
                                                   'location' => 'ne', 
                                                   'x' => 0, 
                                                   'y' => 0))
     {
-        $opts['on'] = isset($opts['on']) ? $opts['on'] : true;
+        $opts['on']       = isset($opts['on']) ? $opts['on'] : true;
         $opts['location'] = isset($opts['location']) ? $opts['location'] : 'ne';
 
-        $legendMapper = array('on' => 'show',
+        $legendMapper = array('on'       => 'show',
                               'location' => 'position');
 
         foreach ($opts as $key=>$val) {
-            if ( in_array($key, $this->nativeOpts['legend']) ) {
-                $this->options['legend'][$key] = $val;
+            if ( array_key_exists($key, $this->nativeOpts['legend']) ) {
+                $this->setNestedOptVal( $this->options, 'legend', $key, $val );
             } else if ( in_array($key, array_keys($legendMapper)) ) {
-                $this->options['legend'][$legendMapper[$key]] = $val;
+                $this->setNestedOptVal( $this->options, 'legend', $legendMapper[$key], $val );
             }
         }
 
-        $margin = array(isset($opts['x']) ? $opts['x'] : 0, isset($opts['y']) ? $opts['y'] : 0);
+        $margin = array(
+                    isset($opts['x']) ? $opts['x'] : 0, 
+                    isset($opts['y']) ? $opts['y'] : 0
+                );
 
-        $this->options['legend']['margin'] = $margin;
-
-
-        return $this;
+        return $this->setNestedOptVal( $this->options, 'legend', 'margin', $margin );
     }
     
     /**
-     * (non-PHPdoc)
+     * Implemented from \Altamira\JsWriter\Ability\Fillable
      * @see \Altamira\JsWriter\Ability\Fillable::setFill()
+     * @param \Altamira\Chart|series $series
+     * @param array $opts
+     * @return \Altamira\JsWriter\Flot
      */
     public function setFill($series, $opts = array('use'    => true,
                                                    'stroke' => false,
@@ -484,10 +459,10 @@ ENDJS;
 
         // @todo add a method of telling flot whether the series is a line, bar, point
         if ( isset( $opts['use'] ) && $opts['use'] == true ) {
-            $this->options['seriesStorage'][$this->getSeriesTitle( $series )]['line']['fill'] = true;
+            $this->setNestedOptVal( $this->options, 'seriesStorage', $this->getSeriesTitle( $series ), 'line', 'fill', true );
             
             if ( isset( $opts['color'] ) ) {
-                $this->options['seriesStorage'][$series]['line']['fillColor'] = $opts['color'];
+                $this->setNestedOptVal( $this->options, 'seriesStorage', $this->getSeriesTitle( $series ), 'line', 'fillColor', $opts['color'] );
             }
         }
 
@@ -495,8 +470,11 @@ ENDJS;
     }
     
     /**
-     * (non-PHPdoc)
+     * Implemented from \Altamira\JsWriter\Ability\Shadowable
      * @see \Altamira\JsWriter\Ability\Shadowable::setShadow()
+     * @param \Altamira\Series|string $series
+     * @param array $opts
+     * @return \Altamira\JsWriter\Flot
      */
     public function setShadow($series, $opts = array('use'    => true,
                                                      'angle'  => 45,
@@ -513,50 +491,79 @@ ENDJS;
         return $this;
     }
     
-    public function useSeriesLabels( $seriesTitle, array $labels = array() )
+    /**
+     * Initializes default settings for using labels
+     * @see \Altamira\JsWriter\Ability\Labelable::useSeriesLabels()
+     * @param string|\Altamira\Series $series
+     * @return \Altamira\JsWriter\Flot
+     */
+    public function useSeriesLabels( $series )
     {
         $this->useLabels = true;
-        $this->seriesLabels[$seriesTitle] = $labels;
-        $this->options['seriesStorage'][$seriesTitle]['pointLabels']['edgeTolerance'] = 3;
-        return $this;
+        return $this->setNestedOptVal( $this->options, 'seriesStorage', $this->getSeriesTitle( $series ), 'pointLabels', 'edgeTolerance', 3 );
     }
     
-    public function setSeriesLabelSetting( $seriesTitle, $name, $value )
+    /**
+     * Sets label setting option values
+     * NOTE: FLOT DOES NOT SUPPORT SERIES-SPECIFIC LABEL SETTINGS
+     * The options you set here are global label settings.
+     * @see \Altamira\JsWriter\Ability\Labelable::setSeriesLabelSetting()
+     * @param string $series
+     * @param string $name
+     * @param mixed $value
+     * @return \Altamira\JsWriter\Flot
+     */
+    public function setSeriesLabelSetting( $series, $name, $value )
     {
         // jqplot supports this, but we're just going to do global settings. overwrite at your own peril.
         $this->labelSettings[$name] = $value;
         return $this;
     }
     
-    public function setSeriesLineWidth( $seriesTitle, $value )
+    /**
+     * Determines the width of the line we will show, if we're showing it
+     * @see \Altamira\JsWriter\Ability\Lineable::setSeriesLineWidth()
+     * @param string $series
+     * @param mixed $value
+     * @return \Altamira\JsWriter\Flot
+     */
+    public function setSeriesLineWidth( $series, $value )
     {
-        $this->options['seriesStorage'][$seriesTitle]['lines'] = ( isset($this->options['seriesStorage'][$seriesTitle]['lines'])
-                                                               ? $this->options['seriesStorage'][$seriesTitle]['lines']
-                                                               : array() )
-                                                               + array('lineWidth'=>$value);
-
-        return $this;
+        return $this->setNestedOptVal( $this->options, 'seriesStorage', $this->getSeriesTitle( $series ), 'lines', 'linewidth', $value );
     }
     
-    public function setSeriesShowLine( $seriesTitle, $bool )
+    /**
+     * Determines whether we show the line for a series
+     * @see \Altamira\JsWriter\Ability\Lineable::setSeriesShowLine()
+     * @param string|\Altamira\Series $series
+     * @param bool $bool
+     * @return \Altamira\JsWriter\Flot
+     */
+    public function setSeriesShowLine( $series, $bool )
     {
-        $this->options['seriesStorage'][$seriesTitle]['lines'] = ( isset($this->options['seriesStorage'][$seriesTitle]['lines'])
-                                                               ? $this->options['seriesStorage'][$seriesTitle]['lines']
-                                                               : array() )
-                                                               + array('show'=>$bool);
-        return $this;
+        return $this->setNestedOptVal( $this->options, 'seriesStorage', $this->getSeriesTitle( $series ), 'lines', 'show', $bool );
     }
     
-    public function setSeriesShowMarker( $seriesTitle, $bool )
+    /**
+     * Determines whether we show the marker for a series
+     * @see \Altamira\JsWriter\Ability\Lineable::setSeriesShowMarker()
+     * @param string|\Altamira\Series $series
+     * @param bool $bool
+     * @return \Altamira\JsWriter\Flot
+     */
+    public function setSeriesShowMarker( $series, $bool )
     {
-        $this->options['seriesStorage'][$seriesTitle]['points'] = ( isset($this->options['seriesStorage'][$seriesTitle]['points'])
-                                                                ? $this->options['seriesStorage'][$seriesTitle]['points']
-                                                                : array() )
-                                                                + array('show'=>$bool);
-        return $this;
+        return $this->setNestedOptVal( $this->options, 'seriesStorage', $this->getSeriesTitle( $series ), 'points', 'show', $bool );
     }
     
-    public function setSeriesMarkerStyle( $seriesTitle, $value )
+    /**
+     * Sets the style of the marker
+     * @see \Altamira\JsWriter\Ability\Lineable::setSeriesMarkerStyle()
+     * @param string|\Altamira\Series $series
+     * @param string $value
+     * @return \Altamira\JsWriter\Flot
+     */
+    public function setSeriesMarkerStyle( $series, $value )
     {
         // jqplot compatibility preprocessing
         $value = str_replace('filled', '', $value);
@@ -566,25 +573,28 @@ ENDJS;
             $this->files[] = 'jquery.flot.symbol.js';
         }
         
-        $this->options['seriesStorage'][$seriesTitle]['points'] = ( isset($this->options['seriesStorage'][$seriesTitle]['points'])
-                                                                ? $this->options['seriesStorage'][$seriesTitle]['points']
-                                                                : array() )
-                                                                + array('symbol'=>$value);
-
-        return $this;
+        return $this->setNestedOptVal( $this->options, 'seriesStorage', $this->getSeriesTitle( $series ), 'points', 'symbol', $value );
     }
     
-    public function setSeriesMarkerSize( $seriesTitle, $value )
+    /**
+     * Sets the size of the marker
+     * @see \Altamira\JsWriter\Ability\Lineable::setSeriesMarkerSize()
+     * @param string|\Altamira\Series $series
+     * @param mixed $value
+     * @return \Altamira\JsWriter\JqPlot
+     */
+    public function setSeriesMarkerSize( $series, $value )
     {
-        $this->options['seriesStorage'][$seriesTitle]['points'] = ( isset($this->options['seriesStorage'][$seriesTitle]['points'])
-                ? $this->options['seriesStorage'][$seriesTitle]['points']
-                : array() )
-                + array('radius'=>(int) ($value / 2));
-
-        return $this;
+        return $this->setNestedOptVal( $this->options, 'seriesStorage', $this->getSeriesTitle( $series ), 'points', 'radius', (int) ($value / 2) );
     }
 
-    public function setAxisTicks($axis, $ticks)
+    /**
+     * Responsible for setting the tick labels on a given axis
+     * @param string $axis
+     * @param array $ticks
+     * @return \Altamira\JsWriter\Flot
+     */
+    public function setAxisTicks($axis, array $ticks = array() )
     {
         if ( in_array($axis, array('x', 'y') ) ) {
 
@@ -595,36 +605,47 @@ ENDJS;
             foreach ($ticks as $tick) {
                 if (!(ctype_digit($tick) || is_int($tick))) {
                     $isString = true;
+                    // this is O(2N) so deal with it
+                    foreach ( $ticks as $tick ) {
+                        $alternateTicks[] = array($cnt++, $tick);
+                    }
+                    break;
                 }
-                $alternateTicks[] = array($cnt++, $tick);
             }
+            
+            $this->setNestedOptVal( $this->options, $axis.'axis', 'ticks', $isString ? $alternateTicks : $ticks );
 
-            $this->options[$axis.'axis']['ticks'] = $isString ? $alternateTicks : $ticks;
         }
 
         return $this;
     }
 
+    /**
+     * Prepares default values for a series array
+     * @param array $opts
+     */
     public function prepOpts( &$opts = array() )
     {
+        $opts = is_null( $opts ) ? array() : $opts ;
         if (   (!(isset($this->types['default']) && $this->types['default'] instanceOf \Altamira\Type\Flot\Bubble))
             && (!(isset($this->types['default']) && $this->types['default'] instanceOf \Altamira\Type\Flot\Bar))
                 ) {
             if ( (! isset($this->options['seriesStorage']['points'])) && (!isset($opts['points']) || !isset($opts['points']['show'])) ) {
                 // show points by default
-                $opts['points'] = (isset($opts['points']) ? $opts['points'] : array())
-                                + array('show'=>true);
+                $this->setNestedOptVal( $opts, 'points', 'show', true );
             }
             
             if ( (! isset($this->options['seriesStorage']['lines'])) && (!isset($opts['lines']) || !isset($opts['lines']['show'])) ) {
                 // show lines by default
-                $opts['lines'] = (isset($opts['lines']) ? $opts['lines'] : array())
-                + array('show'=>true);
+                $this->setNestedOptVal( $opts, 'lines', 'show', true );
             }
         }
     }
 
-    // maps jqplot-originating option data structure to flot
+    /**
+     * maps jqplot-originating option data structure to flot
+     * @var array
+     */
     private $optsMapper = array('axes.xaxis.tickInterval' => 'xaxis.tickSize',
                                 'axes.xaxis.min'          => 'xaxis.min',
                                 'axes.xaxis.max'          => 'xaxis.max',
@@ -643,7 +664,10 @@ ENDJS;
                                 );
 
 
-    // api-native functionality
+    /**
+     * api-native functionality
+     * @var array
+     */
     private $nativeOpts = array('legend' => array(  'show'=>null,
                                                     'labelFormatter'=>null,
                                                     'labelBoxBorderColor'=>null,
@@ -736,4 +760,98 @@ ENDJS;
 
                                 );
 
+    /**
+     * This is the immutable string component of the zooming function 
+     * we have designed for Flot. It's intended to be passed to sprintf. 
+     * @var string
+     */
+    const ZOOMING_FUNCTION = <<<ENDSCRIPT
+placeholder.bind("plotselected", function (event, ranges) {
+    jQuery.plot(placeholder, %s,
+      $.extend(true, {}%s, {
+      xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to },
+      yaxis: { min: ranges.yaxis.from, max: ranges.yaxis.to }
+  }));
+});
+placeholder.on('dblclick', function(){ plot.clearSelection(); jQuery.plot(placeholder, %s%s); });
+ENDSCRIPT;
+    
+    /**
+     * This is the immutable string component of the labeling function 
+     * we have designed for Flot. It's intended to be passed to sprintf. 
+     * @var string
+     */
+    const LABELS_FUNCTION = <<<ENDJS
+var pointLabels = %s;
+
+$.each(plot.getData()[0].data, function(i, el){
+    var o = plot.pointOffset({
+        x: el[0], y: el[1]});
+        $('<div class="data-point-label">' + pointLabels[el[0] + ',' + el[1]] + '</div>').css( {
+            position: 'absolute',
+            left: o.left%s%s,
+            top: o.top-5%s%s,
+            display: 'none',
+            'font-size': '10px'
+        }).appendTo(plot.getPlaceholder()).fadeIn('slow');
+});
+ENDJS;
+    
+    /**
+     * This is the immutable string component of the highlighting function 
+     * we have designed for Flot. It's intended to be passed to sprintf. 
+     * @var string
+     */
+    const HIGHLIGHTING_FUNCTION = <<<ENDJS
+
+function showTooltip(x, y, contents) {
+    $('<div id="flottooltip">' + contents + '</div>').css( {
+        position: 'absolute',
+        display: 'none',
+        top: y + 5,
+        left: x + 5,
+        border: '1px solid #fdd',
+        padding: '2px',
+        'background-color': '#fee',
+        opacity: 0.80
+    }).appendTo("body").fadeIn(200);
+}
+
+var previousPoint = null;
+
+placeholder.bind("plothover", function (event, pos, item) {
+    if (item) {
+        if (previousPoint != item.dataIndex) {
+            previousPoint = item.dataIndex;
+
+            $("#flottooltip").remove();
+            var x = item.datapoint[0].toFixed(2),
+                y = item.datapoint[1].toFixed(2);
+
+            showTooltip(item.pageX, item.pageY,
+                        %s);
+        }
+    }
+    else {
+        $("#flottooltip").remove();
+        previousPoint = null;
+    }
+});
+ENDJS;
+    
+    /**
+     * This is the string value of actual "plot" call to Flot,
+     * intended to be passed to sprintf
+     * @var string
+     */
+    const SCRIPT_OUTPUT = <<<ENDSCRIPT
+jQuery(document).ready(function() {
+    var placeholder = jQuery('#%s');
+    var plot = jQuery.plot(placeholder, %s%s);
+    %s
+});
+
+ENDSCRIPT;
+    
+   
 }

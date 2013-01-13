@@ -1,13 +1,16 @@
 <?php 
-
+/**
+ * Class definition for \Altamira\ChartDatum\Bubble
+ * @author relwell
+ *
+ */
 namespace Altamira\ChartDatum;
 
 /**
  * Class for abstracting bubble chart data.
+ * @package ChartDatum
  * @author relwell
- *
  */
-
 class Bubble extends ChartDatumAbstract
 {
 
@@ -33,8 +36,9 @@ class Bubble extends ChartDatumAbstract
     }
     
     /**
-     * (non-PHPdoc)
+     * Returns an array that corresponds with the ultimate JSON data needed for this datum
      * @see Altamira\ChartDatum.ChartDatumAbstract::getRenderData()
+     * @param bool $useLabel
      */
     public function getRenderData( $useLabel = false )
     {

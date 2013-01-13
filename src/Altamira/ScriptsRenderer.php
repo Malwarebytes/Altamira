@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Class definition for \Altamira\ScriptsRenderer
+ * @author relwell
+ *
+ */
 namespace Altamira;
 
 /**

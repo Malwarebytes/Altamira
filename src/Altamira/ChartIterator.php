@@ -1,7 +1,15 @@
 <?php 
-
+/**
+ * Class definition for \Altamira\ChartIterator
+ * @author relwell
+ *
+ */
 namespace Altamira;
 
+/**
+ * Allows us to register and iterate over charts for rendering
+ * @author relwell
+ */
 class ChartIterator extends \ArrayIterator
 {
     /**
@@ -177,6 +185,10 @@ class ChartIterator extends \ArrayIterator
         
     }
     
+    /**
+     * Provides the appropriate path to where required CSS is stored for these charting libraries
+     * @return Ambigous <string, \Altamira\Config>
+     */
     public function getCSSPath()
     {
         $config = \Altamira\Config::getInstance();

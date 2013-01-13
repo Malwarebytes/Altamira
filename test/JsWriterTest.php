@@ -2,6 +2,7 @@
 
 class JsWriterTest extends PHPUnit_Framework_TestCase
 {
+    
     /**
      * @covers \Altamira\JsWriter\JsWriterAbstract::__construct
      * @covers \Altamira\JsWriter\JsWriterAbstract::initializeSeries
@@ -14,7 +15,6 @@ class JsWriterTest extends PHPUnit_Framework_TestCase
      * @covers \Altamira\JsWriter\JsWriterAbstract::setType
      * @covers \Altamira\JsWriter\JsWriterAbstract::getType
      * @covers \Altamira\JsWriter\JsWriterAbstract::getFiles
-     * @covers \Altamira\JsWriter\JsWriterAbstract::setTypeOption
      * @covers \Altamira\JsWriter\JsWriterAbstract::getCallbackPlaceholder
      * @covers \Altamira\JsWriter\JsWriterAbstract::makeJSArray
      * @covers \Altamira\JsWriter\JsWriterAbstract::getScript
@@ -127,8 +127,21 @@ class JsWriterTest extends PHPUnit_Framework_TestCase
                 $jsWriter->setType( 'Bar' ),
                 '\Altamira\JsWriter\JsWriterAbstract::setType should provide fluent interface'
         );
+        $this->assertEquals(
+                $jsWriter,
+                $jsWriter->setType( 'Bar', array(), $seriesTitle ),
+                '\Altamira\JsWriter\JsWriterAbstract::setType should provide fluent interface'
+        );
         
-        $jsWriter->setType( 'Stacked', $seriesTitle );
+        $jsWriter->setType( 'Stacked', array(), $seriesTitle );
+        
+        try {
+            $jsWriter->setType( 'asdfjakdfajf' );
+        } catch ( Exception $typeException ) { }
+        $this->assertInstanceOf(
+                'Exception',
+                $typeException
+        );
         
         $typesProperty = new ReflectionProperty( '\Altamira\JsWriter\JsWriterAbstract', 'types' );
         $typesProperty->setAccessible( true );
@@ -153,30 +166,7 @@ class JsWriterTest extends PHPUnit_Framework_TestCase
         $this->assertNull(
                 $jsWriter->getType( 'series that does not exist' )
         );
-        $this->assertEquals(
-                $jsWriter,
-                $jsWriter->setTypeOption( 'typeoption', 'to1' )
-        );
-        $this->assertEquals(
-                $jsWriter,
-                $jsWriter->setTypeOption( 'typeoption', 'to2', $seriesTitle )
-        );
-        
-        $reflectionTypeOption = new ReflectionProperty( '\Altamira\Type\TypeAbstract', 'options' );
-        $reflectionTypeOption->setAccessible( true );
-        
-        $defaultTypeOptions = $reflectionTypeOption->getValue( $types['default'] );
-        $seriesTypeOptions = $reflectionTypeOption->getValue( $types[$seriesTitle] );
-        
-        $this->assertEquals(
-                'to1',
-                $defaultTypeOptions['typeoption']
-        );
-        $this->assertEquals(
-                'to2',
-                $seriesTypeOptions['typeoption']
-        );
-        
+
         $filesAttr = new ReflectionProperty( '\Altamira\JsWriter\JsWriterAbstract', 'files' );
         $filesAttr->setAccessible( true );
         $filesAttr->setValue( $jsWriter, array( 'examplefile' ) );
@@ -212,9 +202,12 @@ class JsWriterTest extends PHPUnit_Framework_TestCase
         $expectedJson = <<<JSON
 {"foo":(function(){alert("hi");})(),"bar":$.jqplot.DateAxisRenderer,"baz":"qux"}
 JSON;
+        
+        $reflMake = new ReflectionMethod( '\Altamira\JsWriter\JqPlot', 'makeJSArray' );
+        $reflMake->setAccessible( true );
         $this->assertEquals(
                 $expectedJson,
-                $jsWriter->makeJSArray( $jsvals ),
+                $reflMake->invoke( $jsWriter, $jsvals),
                 '\Altamira\JsWriter\JsWriterAbstract::makeJSArray should json-encode an array, replacing callbacks and properly evaluating values wrapped in hashes'
         );
         $this->assertNotEmpty(
@@ -252,8 +245,7 @@ JSON;
      * @covers \Altamira\JsWriter\JqPlot::setSeriesOption
      * @covers \Altamira\JsWriter\JqPlot::setSeriesLabelSetting
      * @covers \Altamira\JsWriter\JqPlot::getOptionsJS
-     * @covers \Altamira\JsWriter\JqPlot::getSeriesOptions
-     * @covers \Altamira\JsWriter\JqPlot::getTypeOptions
+     * @covers \Altamira\JsWriter\JqPlot::setType
      * @covers \Altamira\JsWriter\JqPlot::useDates
      * @covers \Altamira\JsWriter\JqPlot::setAxisOptions
      * @covers \Altamira\JsWriter\JqPlot::setLegend
@@ -263,7 +255,7 @@ JSON;
      * @covers \Altamira\JsWriter\JqPlot::useCursor
      * @covers \Altamira\JsWriter\JqPlot::useZooming
      * @covers \Altamira\JsWriter\JqPlot::useHighlighting
-     * @covers \Altamira\JsWriter\JqPlot::generateScript
+     * @covers \Altamira\JsWriter\JqPlot::getScript
      */
     public function testJqPlot() 
     {
@@ -384,6 +376,7 @@ JSON;
                 $jsWriter->useHighlighting( array( 'size' => 10 ) )
         );
         
+        
         $optionAttr = new ReflectionProperty( '\Altamira\JsWriter\JqPlot', 'options' );
         $optionAttr->setAccessible( true );
         $options = $optionAttr->getValue( $jsWriter );
@@ -421,10 +414,6 @@ JSON;
         $this->assertEquals(
                 true,
                 $options['seriesStorage'][$seriesTitle]['pointLabels']['show']
-        );
-        $this->assertEquals(
-                $labels,
-                $options['seriesStorage'][$seriesTitle]['pointLabels']['labels']
         );
         $this->assertEquals(
                 3,
@@ -528,10 +517,6 @@ JSON;
                 $options['highlighter']
         );
         
-        
-        $jsWriter->setType( 'Bar' );
-        $jsWriter->setType( 'Bar', $seriesTitle );
-        
         $this->assertContains(
                 'jqplot.dateAxisRenderer.js',
                 $jsWriter->getFiles(),
@@ -542,43 +527,17 @@ JSON;
                 $options['axes']['yaxis']['renderer']
         );
         
-        $optionsJs = $jsWriter->getOptionsJS();
+        $reflGet = new ReflectionMethod( '\Altamira\JsWriter\JqPlot', 'getOptionsJs' );
+        $reflGet->setAccessible( true );
+        $optionsJs = $reflGet->invoke( $jsWriter );
         
         $modelOptions = $options;
         $modelOptions['series'] = $modelOptions['seriesStorage'];
         unset( $modelOptions['seriesStorage'] );
         
-        $this->assertEquals(
-                preg_replace('/"#([^#":]*)#"/U', '$1', json_encode( $modelOptions ) ),
-                $optionsJs
-        );
-        
-        $getSeriesOptions = new ReflectionMethod( '\Altamira\JsWriter\JqPlot', 'getSeriesOptions' );
-        $getSeriesOptions->setAccessible( true );
-        
-        $optionsResult = $getSeriesOptions->invoke( $jsWriter, $options );
-        $this->assertArrayHasKey(
-                'seriesDefaults',
-                $optionsResult
-        );
-        $this->assertArrayHasKey(
-                'renderer',
-                $optionsResult['seriesDefaults']
-        );
-        $this->assertArrayHasKey(
-                'renderer',
-                $optionsResult['seriesStorage'][0]
-        );
-        $this->assertArrayHasKey(
-                'label',
-                $optionsResult['seriesStorage'][0],
-                '\Altamira\JsWriter\JqPlot::getSeriesOptions should transform series title to label'
-        );
-        
-        $typeOptions = new ReflectionMethod( '\Altamira\JsWriter\JqPlot', 'getTypeOptions' );
-        $typeOptions->setAccessible( true );
-        
-        $typeOptionsResult = $typeOptions->invoke( $jsWriter, $optionsResult );
+        $options = new ReflectionProperty( '\Altamira\JsWriter\JqPlot', 'options' );
+        $options->setAccessible( true );
+        $optionsResult = $options->getValue( $jsWriter );
         
         $jsWriter->setLegend( array( 'on' => true, 'location' => 'outside' ) );
         $options = $optionAttr->getValue( $jsWriter );
@@ -594,16 +553,7 @@ JSON;
                 $options
         );
         
-        $seriesLabelsProperty = new ReflectionProperty( '\Altamira\JsWriter\Flot', 'seriesLabels' );
-        $seriesLabelsProperty->setAccessible( true );
-        $seriesLabels = $seriesLabelsProperty->getValue( $jsWriter );
-        
-        $mockDatum
-            ->expects( $this->once() )
-            ->method ( 'setLabel' )
-            ->with   ( $seriesLabels[$seriesTitle][0] )
-        ;
-        $output = $jsWriter->generateScript();
+        $output = $jsWriter->getScript();
         
         
         $this->assertContains(
@@ -616,6 +566,36 @@ JSON;
                 $output
         );
         
+        
+        $this->assertEquals(
+                $jsWriter,
+                $jsWriter->setType( 'Bar', array( 'horizontal' => true ) )
+        );
     }
     
+    /**
+     * @covers \Altamira\JsWriter\JqPlot::getOptionsJS
+     */
+    public function testJqPlotJsArrayHidesTitleWhenRequired()
+    {
+        $chart = new \Altamira\Chart( 'foo', \Altamira\JsWriter\JqPlot::LIBRARY );
+        $chart->setTitle( "I am a title" );
+        
+        $reflGet = new ReflectionMethod( '\Altamira\JsWriter\JqPlot', 'getOptionsJs' );
+        $reflGet->setAccessible( true );
+        
+        $origJs = json_decode( $reflGet->invoke( $chart->getJsWriter() ), true );
+        $this->assertArrayHasKey(
+                'title',
+                $origJs,
+                '\Altamira\JsWriter\JqPlot::getOptionsJS should encode a value for the chart title by default'
+        );
+        
+        $newJs = json_decode( $reflGet->invoke( $chart->hideTitle()->getJsWriter() ), true );
+        $this->assertArrayNotHasKey(
+                'title',
+                $newJs,
+                '\Altamira\JsWriter\JqPlot::getOptionsJS should not encode a value for the chart title if the chart is hiding its title'
+        );
+    }
 }

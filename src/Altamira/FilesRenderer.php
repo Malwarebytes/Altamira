@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Class definition for \Altamira\FilesRenderer
+ * @author relwell
+ *
+ */
 namespace Altamira;
 
 /**
@@ -10,7 +14,6 @@ class FilesRenderer extends \ArrayIterator
     /**
      * Constructor method. Providing a path prepends that path to all files.
      * @param array  $array
-     * @param string $path
      */
     public function __construct( array $array )
     {
@@ -28,25 +31,38 @@ class FilesRenderer extends \ArrayIterator
      */
     public function render()
     {
-        echo <<<ENDSCRIPT
-<script type="text/javascript" src="{$this->current()}"></script>
-
-ENDSCRIPT;
+        echo "<script type=\"text/javascript\" src=\"{$this->current()}\"></script>\n";
         
         return $this;
         
     }    
 
+    /**
+     * Hooks into ArrayIterator::append() to make sure the file passed includes the .min extension if required
+     * @see ArrayIterator::append()
+     * @param string $val
+     */
     public function append( $val )
     {
         return parent::append( $this->handleMinify( $val ) );
     }
 
+    /**
+     * Ensures the value contains the minification extension upon set, if required
+     * @see ArrayIterator::offsetSet()
+     * @param int $offset
+     * @param string $val
+     */
     public function offsetSet( $offset, $val )
     {
         return parent::offsetSet( $offset, $this->handleMinify( $val ) );
     }
 
+    /**
+     * Determines whether to point to minified or unmified js file
+     * @param string $val
+     * @return mixed
+     */
     protected function handleMinify( $val )
     {
         return \Altamira\Config::minifyJs()

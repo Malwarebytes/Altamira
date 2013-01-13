@@ -1,7 +1,17 @@
 <?php
-
+/**
+ * Class definition for \Altamira\JsWriter\Ability\Lineable
+ * @author relwell
+ */
 namespace Altamira\JsWriter\Ability;
-
+/**
+ * This interface dictates that the implementing class can control
+ * and transform options around rendering lines in a chart.
+ * @namespace \Altamira\JsWriter\Ability
+ * @package JsWriter
+ * @subpackage Ability
+ * @author relwell
+ */
 interface Lineable
 {
     /**

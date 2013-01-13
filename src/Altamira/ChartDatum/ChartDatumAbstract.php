@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Class definition for \Altamira\ChartDatum\ChartDatumAbstract
+ * @author relwell
+ *
+ */
 namespace Altamira\ChartDatum;
 
 use \Altamira\JsWriter\JsWriterAbstract;
@@ -7,8 +11,9 @@ use \Altamira\Series;
 
 /**
  * Data abstraction class for points.
+ * Provides a common interface for data access between different dimensionalities of chart data
+ * @package ChartDatum
  * @author relwell
- *
  */
 abstract class ChartDatumAbstract implements \ArrayAccess
 {
@@ -67,6 +72,10 @@ abstract class ChartDatumAbstract implements \ArrayAccess
         return $this;
     }
     
+    /**
+     * Registers an instance of \Altamira\Series with this instance 
+     * @param \Altamira\Series $series
+     */
     public function setSeries( Series $series )
     {
         $this->series = $series;
@@ -81,32 +90,43 @@ abstract class ChartDatumAbstract implements \ArrayAccess
         return $this['label'];
     }
     
-	/* (non-PHPdoc)
+	/**
+	 * Returns whether a value exists for the provided offset
      * @see ArrayAccess::offsetExists()
+     * @param string $offset
+     * @return bool
      */
     public function offsetExists ($offset)
     {
         return isset($this->datumData[$offset]);
     }
 
-	/* (non-PHPdoc)
+	/**
+	 * Returns a value for the provided offset
      * @see ArrayAccess::offsetGet()
+     * @param string $offset
+     * @return mixed value
      */
     public function offsetGet ($offset)
     {
         return isset($this->datumData[$offset]) ? $this->datumData[$offset] : false;
     }
 
-	/* (non-PHPdoc)
+	/**
+	 * Sets a value for the provided offset
      * @see ArrayAccess::offsetSet()
+     * @param string $offset
+     * @param mixed $value
      */
     public function offsetSet ($offset, $value)
     {
         $this->datumData[$offset] = $value;
     }
 
-	/* (non-PHPdoc)
+	/**
+	 * De-registers the value for the provided offset
      * @see ArrayAccess::offsetUnset()
+     * @param string $offset
      */
     public function offsetUnset ($offset)
     {

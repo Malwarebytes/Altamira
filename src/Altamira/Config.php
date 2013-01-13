@@ -1,13 +1,19 @@
 <?php 
-
+/**
+ * Class definition for \Altamira\Config
+ * @author relwell
+ *
+ */
 namespace Altamira;
 
 /**
+ * Configuration class for global state and environmental dependencies
  * @codeCoverageIgnore
  */
 class Config implements \ArrayAccess
 {
     /**
+     * Contains the configuration values stored within the config
      * @var array
      */
     protected $config = array();
@@ -33,6 +39,8 @@ class Config implements \ArrayAccess
         if ( !empty( $file ) && file_exists( $file ) ) {
             $this->config = parse_ini_file( $file, true );
         }
+        
+        $this['altamira.root'] = __DIR__ . '/';
     }
     
     /**
@@ -82,38 +90,46 @@ class Config implements \ArrayAccess
         self::$file = $file;
     }
     
-	/* (non-PHPdoc)
+	/**
+	 * Determine if there is a value for this key in the config
      * @see ArrayAccess::offsetExists()
+     * @param string $offset
+     * @return bool
      */
     public function offsetExists ($offset)
     {
         return isset( $this->config[$offset] );
     }
 
-	/* (non-PHPdoc)
+	/**
+	 * Retrieve the config value for the provided key
      * @see ArrayAccess::offsetGet()
+     * @param string $offset
+     * @return mixed|null
      */
     public function offsetGet ($offset)
     {
         return $this->offsetExists($offset) ? $this->config[$offset] : null;
     }
 
-	/* (non-PHPdoc)
+	/**
+	 * Stores the value for the given key
      * @see ArrayAccess::offsetSet()
+     * @param string $offset
+     * @param mixed $value
      */
     public function offsetSet ($offset, $value)
     {
         $this->config[$offset] = $value;
     }
 
-	/* (non-PHPdoc)
+	/**
+	 * Removes the provided key-value pair from the config array
      * @see ArrayAccess::offsetUnset()
+     * @param string $offset
      */
     public function offsetUnset ($offset)
     {
         unset($this->config[$offset]);
     }
-
-    
-    
 }

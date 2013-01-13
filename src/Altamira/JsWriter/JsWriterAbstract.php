@@ -1,7 +1,18 @@
 <?php
-
+/**
+ * Class Definition for \Altamira\JsWriter\JsWriterAbstract
+ */
 namespace Altamira\JsWriter;
 
+/**
+ * This class is responsible for aggregating charting options
+ * and rendering them in JavaScript. There is a one-to-one relationship
+ * between JsWriters and charts. JsWriters are associated with different 
+ * charting libraries.
+ * @namespace \Altamira\JsWriter
+ * @package JsWriter
+ * @author relwell
+ */
 abstract class JsWriterAbstract
 {
     /**
@@ -27,12 +38,6 @@ abstract class JsWriterAbstract
      * @var array
      */
     protected $callbacks = array();
-    
-    /**
-     * String labels stored in order of series array. 
-     * @var array
-     */
-    protected $seriesLabels = array();
     
     /**
      * Registry for types that may require different rendering. 
@@ -70,24 +75,13 @@ abstract class JsWriterAbstract
     }
     
     /**
-     * Combines all options as a preparation step and then calls the concrete generateScript method
-     * @return string
-     */
-    public function getScript()
-    {
-        $this->options = $this->getTypeOptions( $this->getSeriesOptions( $this->options ) );
-        
-        return $this->generateScript();
-    }
-    
-    /**
      * JSON-encoding with some additional treatments
      * -- anything wrapped in hashes will be treated as bare in js (not wrapped in quotes, for example)
      * -- callbacks are introduced where they are stored after json-encoding, so that they are evaluated
      * @param array $array
      * @return string
      */
-    public function makeJSArray( $array )
+    protected function makeJSArray( $array )
     {
         $optionString = preg_replace('/"#([^#":]*)#"/U', '$1', json_encode( $array ) );
         
@@ -234,28 +228,40 @@ abstract class JsWriterAbstract
     }
     
     /**
-     * Sets a type for a series or for default rendering
-     * @param string $type
-     * @param \Altamira\Series|string $series
-     * @return \Altamira\JsWriter\JsWriterAbstract
+     * Returns an type that has not yet been registered. 
+     * @param \Altamira\Type\TypeAbstract $type
+     * @param array $options
+     * @param string|\Altamira\Series $series
      */
-    public function setType( $type, $series = null )
+    public function setType( $type, $options = array(), $series = 'default' )
     {
-        $series = $this->getSeriesTitle( $series );
+        $options = $options ?: array(); // i shouldn't have to do this
         
-        $title = $series ?: 'default';
-    
         $className =  $this->typeNamespace . ucwords( $type );
+     
         if( class_exists( $className ) ) {
-            $this->types[$title] = new $className( $this );
+            $type = new $className( $this );
+        } else {
+            throw new \Exception( "Type {$type} does not exist" );
         }
-
+        
+        $type->setOptions( $options );
+        
+        $series = $this->getSeriesTitle( $series );
+        $this->types[$series] = $type;
+        if ( isset( $this->options['seriesStorage'][$series] ) ) {
+            $this->options['seriesStorage'][$series] = array_merge_recursive( $this->options['seriesStorage'][$series], $type->getSeriesOptions() );
+            if ( $renderer = $type->getRenderer() ) {
+                $this->options['seriesStorage'][$series]['renderer'] = $renderer;
+            }
+        }
+        $this->options = array_merge_recursive( $this->options, $type->getOptions() );
         return $this;
     }
     
     /**
      * Returns the type instance for the provided key
-     * @param unknown_type $key
+     * @param string|\Altamira\Series $series
      * @return multitype:|NULL
      */
     public function getType( $series = null )
@@ -267,43 +273,24 @@ abstract class JsWriterAbstract
     }
     
     /**
-     * Sets an option for a provided type, either by default or as a series
-     * @param string $name
-     * @param mixed $option
-     * @param \Altamira\Series|string $series
-     * @return \Altamira\JsWriter\JsWriterAbstract
-     */
-    public function setTypeOption( $name, $option, $series=null )
-    {
-        $series = $this->getSeriesTitle( $series );
-        
-        $title = $series ?: 'default';
-        
-        if( isset( $this->types[$title] ) ) {
-            $this->types[$title]->setOption( $name, $option );
-        }
-
-        return $this;
-    }
-    
-    /**
      * Allows you to set discretely infinite nesting without notices 
      * by creating an empty array for key values that don't already exist
-     * @param array $options
-     * @param $_ ... 
+     * @param array $options the option array to operate against
+     * @param mixed $arg the first any number of arguments to nest through an array, the final of which being the value to set
      * @return \Altamira\JsWriter\JsWriterAbstract
      */
-    protected function setNestedOptVal( array &$options )
+    protected function setNestedOptVal( array &$options, $arg )
     {
         //@codeCoverageIgnoreStart
         $args = func_get_args();
         
-        if ( count( $args ) < 3 ) {
+        if ( count( $args ) == 2 && is_array( $args[1] ) ) {
+            $args = $args[1];
+        } else if ( count( $args ) < 3 ) {
             throw new \BadMethodCallException( '\Altamira\JsWriterAbstract::setNestedOptVal requires at least three arguments' );
+        } else {
+            array_shift( $args );
         }
-        
-        // ditch the first one
-        array_shift( $args );
         
         do {
             $arg = array_shift( $args );
@@ -322,15 +309,47 @@ abstract class JsWriterAbstract
     }
     
     /**
-     * Intended to transform data structures for storing info before encoding to json
-     * These transformations differe from library to library
+     * Allows you to get the value for discretely infinite nesting without notices 
+     * by returning null without a warning if it doesn't exist
      * @param array $options
+     * @param mixed $arg the first of any number of arguments to nest through an array, the final of which being the value to return
+     * @return mixed
      */
-    abstract protected function getSeriesOptions( array $options );
+    protected function getNestedOptVal( array $options, $arg )
+    {
+        //@codeCoverageIgnoreStart
+        $args = func_get_args();
+        
+        if ( count( $args ) == 2 && is_array( $args[1] ) ) {
+            $args = $args[1];
+        } else if ( count( $args ) < 3 ) {
+            throw new \BadMethodCallException( '\Altamira\JsWriterAbstract::getNestedOptVal requires at least three arguments' );
+        } else {
+            array_shift( $args );
+        }
+        
+        do {
+            $arg = array_shift( $args );
+            
+            if (! isset( $options[$arg] ) ) {
+                return null;
+            }
+            $options = &$options[$arg];
+            
+        } while ( count( $args ) > 1 );
+        
+        $finalArg = array_shift( $args );
+        return isset( $options[$finalArg] ) ? $options[$finalArg] : null;
+        //@codeCoverageIgnoreEnd
+    }
+
     /**
-     * Post-processing for options based on any registered types... this data goes to different places in different libraries
-     * @param array $options
+     * Responsible for generating JavaScript
      */
-    abstract protected function getTypeOptions( array $options );
-    abstract protected function generateScript();
+    abstract public function getScript();
+    
+    /**
+     * This wraps makeJSArray with hooks required to form the JS 
+     */
+    abstract protected function getOptionsJS();
 }

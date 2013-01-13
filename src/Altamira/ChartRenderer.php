@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Class definition for \Altamira\ChartRenderer
+ * @author relwell
+ */
 namespace Altamira;
 use Altamira\ChartRenderer\RendererInterface;
 
