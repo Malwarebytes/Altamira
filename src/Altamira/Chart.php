@@ -245,11 +245,22 @@ class Chart
 		return $this;
 	}
 
-	/**
-	 * Sets legend options within the jsWriter
-	 * @param array $opts
-	 * @return \Altamira\Chart provides fluent interface
-	 */
+        /**
+         * Sets legend options within the jsWriter.
+         * To show or hide the legend, invoke the following method:
+         * <code>
+         * // default value for first parameter will show the legend
+         * $chart->setLegend();
+         * // this value will explicitly hide the legend
+         * $chart->setLegend( array( 'on' => false ) );
+         * // this value will explicitly show the legend, and override the default orientation (ne)
+         * $chart->setLegend( array( 'on' => true, 'location' => 'sw' ) );
+         * </code>
+         * $chart->setLegend() encapsulates $chart->jsWriter->setLegend(), passing the values on. 
+         * Only a jsWriter that implements \Altamira\JsWriter\Ability\Legendable will have that method available.
+         * @param array $opts
+         * @return \Altamira\Chart provides fluent interface
+         */
 	public function setLegend( array $opts = array('on' => 'true', 
                                                    'location' => 'ne', 
                                                    'x' => 0, 
