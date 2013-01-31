@@ -103,7 +103,7 @@ class Series
                                             'alpha'  => null ) )
 	{
         if ( $this->jsWriter instanceOf \Altamira\JsWriter\Ability\Fillable ) {
-    	    $this->jsWriter->setFill($this->getTitle(), $opts);
+    	    $this->jsWriter->setFill($this, $opts);
         }
 	    
 		return $this;
@@ -279,6 +279,20 @@ class Series
 	{
 	    $this->jsWriter->setType( $type, $this->getTitle() );
 	    
+	    return $this;
+	}
+	
+	/**
+	 * Useful for D3, which relies on specific values for data
+	 * @param string $key
+	 * @param mixed $value
+	 * @return \Altamira\Series provides fluent interface
+	 */
+	public function mapToData( $key, $value )
+	{
+	    foreach ( $this->getData() as $datum ) {
+	        $datum[$key] = $value;
+	    }
 	    return $this;
 	}
 }

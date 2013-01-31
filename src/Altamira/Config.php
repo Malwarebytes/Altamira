@@ -68,6 +68,8 @@ class Config implements \ArrayAccess
                 return $this['js.flotpluginpath'];
             case \Altamira\JsWriter\JqPlot::LIBRARY:
                 return $this['js.jqplotpluginpath'];
+            case \Altamira\JsWriter\D3::LIBRARY:
+                return $this['js.d3pluginpath'];
         }
     }
     

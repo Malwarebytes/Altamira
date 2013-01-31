@@ -263,4 +263,90 @@ class TypeTest extends PHPUnit_Framework_TestCase
         );
     }
     
+    /**
+     * @covers \Altamira\Type\D3\D3TypeAbstract::getChart
+     */
+    public function testD3TypeAbstract()
+    {
+        $type = $this->getMockBuilder( '\Altamira\Type\D3\D3TypeAbstract' )
+                     ->disableOriginalConstructor()
+                     ->getMockForAbstractClass();
+        
+        try {
+            $type->getChart();
+        } catch ( Exception $e ) { }
+        
+        $this->assertInstanceOf(
+                'Exception',
+                $e
+        );
+        
+        $cd = new ReflectionProperty( '\Altamira\Type\D3\D3TypeAbstract', 'chartDirective' );
+        $cd->setAccessible( true );
+        $cd->setValue( $type, 'foo' );
+        
+        $this->assertEquals(
+                'foo',
+                $type->getChart()
+        );
+    }
+    
+    /**
+     * @covers \Altamira\Type\D3\Bar::getChart
+     */
+    public function testD3BarGetChart()
+    {
+        $type = $this->getMockBuilder( '\Altamira\Type\D3\Bar' )
+                     ->disableOriginalConstructor()
+                     ->setMethods( array( 'foo' ) )
+                     ->getMock();
+        
+        $modelRefl = new ReflectionProperty( '\Altamira\Type\D3\Bar', 'chartModel' );
+        $modelRefl->setAccessible( true );
+        
+        $dirRefl = new ReflectionProperty( '\Altamira\Type\D3\Bar', 'chartDirective' );
+        $dirRefl->setAccessible( true );
+        
+        $this->assertEquals(
+                str_replace( '#model#', $modelRefl->getValue( $type ), $dirRefl->getValue( $type ) ),
+                $type->getChart()
+        ); 
+    }
+    
+    /**
+     * @covers \Altamira\Type\D3\Bar::setOption
+     */
+    public function testD3BarSetOption()
+    {
+        $type = $this->getMockBuilder( '\Altamira\Type\D3\Bar' )
+                     ->disableOriginalConstructor()
+                     ->setMethods( array( 'foo' ) )
+                     ->getMock();
+        
+        $modelRefl = new ReflectionProperty( '\Altamira\Type\D3\Bar', 'chartModel' );
+        $modelRefl->setAccessible( true );
+        
+        $dirRefl = new ReflectionProperty( '\Altamira\Type\D3\Bar', 'chartDirective' );
+        $dirRefl->setAccessible( true );
+        
+        $type->setOption( 'who', 'cares' ); // really -- who cares?
+        
+        $type->setOption( 'horizontal', true );
+        
+        $this->assertEquals(
+                'multiBarHorizontalChart',
+                $modelRefl->getValue( $type )
+        );
+        
+        $type->setOption( 'stackSeries', true );
+        
+        $this->assertEquals(
+                'multiBarChart',
+                 $modelRefl->getValue( $type )
+        );
+        $this->assertContains(
+                '.stacked(true)',
+                $dirRefl->getValue( $type )
+        ); 
+    }
 }

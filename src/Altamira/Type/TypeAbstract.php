@@ -64,12 +64,14 @@ abstract class TypeAbstract
 	    $file = $confInstance['altamira.root'] . $confInstance['altamira.typeconfigpath'];
 	    $config = \parse_ini_file( $file, true );
 	    
-	    $libConfig = $config[strtolower( $jsWriter->getLibrary() )];
-	    $type = static::TYPE;
-        $typeAttributes = preg_grep( "/$type\./i", array_keys( $libConfig ) );
-	    foreach ( $typeAttributes as $key ) {
-	        $attribute = preg_replace( "/{$type}\./i", '', $key );
-	        $this->{$attribute} = $libConfig[$key];
+	    if ( isset( $config[strtolower( $jsWriter->getLibrary() )] ) ) {
+    	    $libConfig = $config[strtolower( $jsWriter->getLibrary() )];
+    	    $type = static::TYPE;
+            $typeAttributes = preg_grep( "/$type\./i", array_keys( $libConfig ) );
+    	    foreach ( $typeAttributes as $key ) {
+    	        $attribute = preg_replace( "/{$type}\./i", '', $key );
+    	        $this->{$attribute} = $libConfig[$key];
+    	    }
 	    }
 	}
 
