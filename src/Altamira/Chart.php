@@ -5,6 +5,7 @@
  *
  */
 namespace Altamira;
+use Altamira\ChartDatum\FactoryStrategy;
 
 /**
  * This class encapsulates all behavior around charts.
@@ -56,6 +57,12 @@ class Chart
 	 * @var bool
 	 */
 	protected $titleHidden = false;
+	
+	/**
+	 * Responsible for creating data based on chart's configurations
+	 * @var FactoryStrategy
+	 */
+	
 
 	/**
 	 * Constructor method. Registers the identifier name and initializes the JsWriter based on the library.
@@ -70,13 +77,17 @@ class Chart
 	    
 		$this->name = preg_replace( '/\s+/', '_', $name );
 
+		$library = (strtolower($library) == \Altamira\JsWriter\JqPlot::LIBRARY) ? \Altamira\JsWriter\JqPlot::LIBRARY : $library;  
 	    $className = '\\Altamira\\JsWriter\\'.ucfirst( $library );
+	    
     
 	    if ( class_exists( $className ) ) {
 	        $this->jsWriter = new $className( $this );
 	    } else {
 	        throw new \Exception( "No JsWriter by name of {$className}" );
 	    }
+	    
+	    $this->dataFactory = new FactoryStrategy( $this );
 	}
 	
 	/**
@@ -117,7 +128,9 @@ class Chart
 	 */
 	public function useHighlighting( array $opts = array( 'size' => 7.5 ) )
 	{
-	    $this->jsWriter->useHighlighting( $opts );
+	    if ( $this->jsWriter instanceof \Altamira\JsWriter\Ability\Highlightable ) {
+    	    $this->jsWriter->useHighlighting( $opts );
+	    }
 
 		return $this;
 	}
@@ -141,7 +154,7 @@ class Chart
 	public function useCursor()
 	{
 	    //@codeCoverageIgnoreStart
-	    if (! $this->jsWriter instanceOf \AltaMira\JsWriter\Ability\Cursorable ) {
+	    if (! $this->jsWriter instanceOf \Altamira\JsWriter\Ability\Cursorable ) {
             throw new \BadMethodCallException( "JsWriter cannot use cursor" );
 	    }
 	    //@codeCoverageIgnoreEnd
@@ -158,7 +171,9 @@ class Chart
 	 */
 	public function useDates( $axis = 'x' )
 	{
-		$this->jsWriter->useDates($axis);
+	    if ( $this->jsWriter instanceof \Altamira\JsWriter\Ability\Datable ) {
+            $this->jsWriter->useDates($axis);
+	    }
 
 		return $this;
 	}
@@ -245,11 +260,22 @@ class Chart
 		return $this;
 	}
 
-	/**
-	 * Sets legend options within the jsWriter
-	 * @param array $opts
-	 * @return \Altamira\Chart provides fluent interface
-	 */
+        /**
+         * Sets legend options within the jsWriter.
+         * To show or hide the legend, invoke the following method:
+         * <code>
+         * // default value for first parameter will show the legend
+         * $chart->setLegend();
+         * // this value will explicitly hide the legend
+         * $chart->setLegend( array( 'on' => false ) );
+         * // this value will explicitly show the legend, and override the default orientation (ne)
+         * $chart->setLegend( array( 'on' => true, 'location' => 'sw' ) );
+         * </code>
+         * $chart->setLegend() encapsulates $chart->jsWriter->setLegend(), passing the values on. 
+         * Only a jsWriter that implements \Altamira\JsWriter\Ability\Legendable will have that method available.
+         * @param array $opts
+         * @return \Altamira\Chart provides fluent interface
+         */
 	public function setLegend( array $opts = array('on' => 'true', 
                                                    'location' => 'ne', 
                                                    'x' => 0, 
@@ -288,7 +314,15 @@ class Chart
 	 */
 	public function createSeries( $data, $title = null, $type = null )
 	{
-        return new Series( $data, $title, $this->jsWriter );
+	    if ( $data[0] instanceof \Altamira\ChartDatum\ChartDatumAbstract ) {
+            $series = new Series( $data, $title, $this->jsWriter );
+	    } else {
+    	    $series = new Series( $this->dataFactory->buildData( $data ), $title, $this->jsWriter );
+	    }
+	    if ( $type !== null ) {
+	        $series->setType( $type );
+	    }
+	    return $series;
 	}
 	
 	/**

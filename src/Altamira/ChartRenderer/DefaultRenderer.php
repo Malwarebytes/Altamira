@@ -26,9 +26,10 @@ class DefaultRenderer implements RendererInterface
     public static function preRender( \Altamira\Chart $chart, array $styleOptions = array() )
     {
         $style = self::renderStyle( $styleOptions );
+        $dataAttributes = self::getAttributesFromChart( $chart );
         
         return <<<ENDDIV
-<div class="{$chart->getLibrary()}" id="{$chart->getName()}" style="{$style}">
+<div class="{$chart->getLibrary()} chart" id="{$chart->getName()}" {$dataAttributes} style="{$style}">
 ENDDIV;
         
     }
@@ -57,6 +58,31 @@ ENDDIV;
             $style .= "$key: $val; ";
         }
         return $style;
+    }
+    
+    /**
+     * Populates data elements for the chart, which can be used for AJAX modifications.
+     * @param \Altamira\Chart $chart
+     * @return string
+     */
+    public static function getAttributesFromChart( \Altamira\Chart $chart )
+    {
+        $attributes = array(
+                'library' => $chart->getLibrary(),
+                'name' => $chart->getName()
+        );
+        
+        if ( $type = $chart->getJsWriter()->getType() ) {
+            $attributes['type'] = $type->getName();
+        }
+        
+        $dataString = '';
+        foreach ( $attributes as $key => $value )
+        {
+            $dataString .= sprintf( 'data-%s="%s" ', $key, $value );
+        }
+        
+        return $dataString;
     }
     
 }

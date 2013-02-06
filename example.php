@@ -15,17 +15,20 @@ use Altamira\ChartDatum\TwoDimensionalPointFactory;
 
 $library = isset($_GET['library']) ? $_GET['library'] : \Altamira\JsWriter\JqPlot::LIBRARY;
 
-if ($library == \Altamira\JsWriter\Flot::LIBRARY) {
-    ChartRenderer::pushRenderer( 'Altamira\ChartRenderer\DefaultRenderer' );
-    ChartRenderer::pushRenderer( 'Altamira\ChartRenderer\TitleRenderer' );
+switch ( $library ) {
+    case \Altamira\JsWriter\Flot::LIBRARY:
+        ChartRenderer::pushRenderer( 'Altamira\ChartRenderer\DefaultRenderer' );
+        ChartRenderer::pushRenderer( 'Altamira\ChartRenderer\TitleRenderer' );
+        break;
+    case \Altamira\JsWriter\D3::LIBRARY:
+        \Altamira\ChartRenderer::pushRenderer( '\Altamira\ChartRenderer\SVGRenderer' );
+        \Altamira\ChartRenderer::pushRenderer( '\Altamira\ChartRenderer\DefaultRenderer' );
+        break;
 }
 
 $chart = new Chart('chart1', $library);
-
 $series1Points = TwoDimensionalPointFactory::getFromYValues( array(2, 8, 5, 3, 8, 9, 7, 8, 4, 2, 1, 6) );
-
 $series2Points = TwoDimensionalPointFactory::getFromYValues( array(7, 3, 7, 8, 2, 3, 1, 2, 5, 7, 8, 3) );
-
 $chart->addSeries($chart->createSeries($series1Points, 'Sales'))->
     addSeries($chart->createSeries($series2Points, 'Returns'))->
     setTitle('Basic Line Chart')->
@@ -187,6 +190,9 @@ $chartIterator = new ChartIterator( $charts );
 <html>
 <head>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<?php if ( $library == \Altamira\JsWriter\D3::LIBRARY ): ?>
+<script src="http://d3js.org/d3.v2.min.js"></script>
+<? endif; ?>
 
 <!-- enable this if you want to display the charts on IE -->
 <!--<script type="text/javascript" src="js/excanvas.js"></script>-->

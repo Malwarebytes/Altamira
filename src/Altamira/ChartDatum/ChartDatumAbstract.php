@@ -132,5 +132,14 @@ abstract class ChartDatumAbstract implements \ArrayAccess
     {
         unset($this->datumData[$offset]);
     }
+    
+    /**
+     * Allows us to directly json_encode the values set in the datum
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->datumData;
+    }
 
 }

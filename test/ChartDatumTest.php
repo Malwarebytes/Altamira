@@ -13,6 +13,7 @@ class ChartDatumTest extends PHPUnit_Framework_TestCase
      * @covers \Altamira\ChartDatum\ChartDatumAbstract::offsetSet
      * @covers \Altamira\ChartDatum\ChartDatumAbstract::offsetGet
      * @covers \Altamira\ChartDatum\ChartDatumAbstract::offsetUnset
+     * @covers \Altamira\ChartDatum\ChartDatumAbstract::toArray
      */
     public function testTwoDimensionalPointAndAbstract()
     {
@@ -108,6 +109,13 @@ class ChartDatumTest extends PHPUnit_Framework_TestCase
                 array( $dimensions['x'], $dimensions['y'], $label ),
                 $point->getRenderData( true ),
                 '\Altamira\TwoDimensionalPoint::getRenderData should return array(x, y, label) when passed true as its first parameter'
+        );
+        
+        $datumDataRefl = new ReflectionProperty( '\Altamira\ChartDatum\ChartDatumAbstract', 'datumData' );
+        $datumDataRefl->setAccessible( true );
+        $this->assertEquals(
+                $datumDataRefl->getValue( $point ),
+                $point->toArray()
         );
         
         unset( $point['x'] );
@@ -276,7 +284,47 @@ class ChartDatumTest extends PHPUnit_Framework_TestCase
                     $bubble['radius']
             );
         }
+    }
+    
+    /**
+     * @covers \Altamira\ChartDatum\ScalarValue::__construct
+     * @covers \Altamira\ChartDatum\ScalarValue::getRenderData
+     * @covers \Altamira\ChartDatum\ScalarValueFactory::getFromScalarArray
+     * @covers \Altamira\ChartDatum\ScalarValueFactory::getFromNestedArray
+     * @covers \Altamira\ChartDatum\ScalarValueFactory::getFromAssociativeArray
+     */
+    public function testScalarValues()
+    {
+        $scalar = new \Altamira\ChartDatum\ScalarValue( array( 1, 2, 3 ), 'foo' ); // ignore other points
+        $this->assertEquals(
+                $scalar->toArray(),
+                array( 'value' => 1, 'label' => 'foo' )
+        ); 
+        $scalars = \Altamira\ChartDatum\ScalarValueFactory::getFromScalarArray( array( 1, 2 ) );
+        $this->assertInstanceOf(
+                '\Altamira\ChartDatum\ScalarValue',
+                $scalars[0]
+        );
+        $this->assertEquals(
+                array( 'value' => 1 ),
+                $scalars[0]->getRenderData()
+        );
+        $this->assertEquals(
+                array( 'value' => 2 ),
+                $scalars[1]->getRenderData()
+        );
         
+        $scalars = \Altamira\ChartDatum\ScalarValueFactory::getFromNestedArray( array( array( 5, 'five' ), array( 6, 'six' ) ) );
+        $this->assertEquals(
+                array( 'value' => 6, 'label' => 'six' ),
+                end( $scalars )->toArray()
+        );
+        
+        $scalars = \Altamira\ChartDatum\ScalarValueFactory::getFromAssociativeArray( array( 'chicken' => 10, 'hawk' => 20 ) );
+        $this->assertEquals(
+                array( 'value' => 20, 'label' => 'hawk' ),
+                end( $scalars )->toArray()
+        );
     }
     
 }

@@ -18,11 +18,11 @@ class ChartTest extends PHPUnit_Framework_TestCase
      * @covers \Altamira\ChartIterator::renderScripts
      * @covers \Altamira\ChartIterator::getPlugins
      * @covers \Altamira\ChartIterator::getScripts
-     * @covers \Altamira\ChartIterator::getCSSPath
+     * @covers \Altamira\ChartIterator::getCSSPaths
      */
     public function testChartIterator()
     {
-        $junkCharts = array( 'chart1', 'chart2' );
+        $junkCharts = array( 'chart1', 'chart2', 'chart3' );
         
         $exception = null;
         try {
@@ -39,6 +39,7 @@ class ChartTest extends PHPUnit_Framework_TestCase
         
         $mockChart1 = $this->getMock( '\Altamira\Chart', array( 'getFiles', 'getScript', 'getLibrary' ), array( 'Mock Chart 1' ) );
         $mockChart2 = $this->getMock( '\Altamira\Chart', array( 'getFiles', 'getScript', 'getLibrary' ), array( 'Mock Chart 2' ) );
+        $mockChart3 = $this->getMock( '\Altamira\Chart', array( 'getFiles', 'getScript', 'getLibrary' ), array( 'Mock Chart 3' ) );
         
         $mockChart1
             ->expects( $this->any() )
@@ -50,6 +51,11 @@ class ChartTest extends PHPUnit_Framework_TestCase
             ->method ( 'getFiles' )
             ->will   ( $this->returnValue( array( 'file2a.js', 'file2b.js' ) ) )
         ;
+        $mockChart3
+            ->expects( $this->any() )
+            ->method ( 'getFiles' )
+            ->will   ( $this->returnValue( array( 'file3a.js', 'file3b.js' ) ) )
+        ;
         $mockChart1
             ->expects( $this->any() )
             ->method ( 'getScript' )
@@ -59,6 +65,11 @@ class ChartTest extends PHPUnit_Framework_TestCase
             ->expects( $this->any() )
             ->method ( 'getScript' )
             ->will   ( $this->returnValue( '(function(alert("ho");))();' ) );
+        ;
+        $mockChart3
+            ->expects( $this->any() )
+            ->method ( 'getScript' )
+            ->will   ( $this->returnValue( '(function(alert("lets go");))();' ) );
         ;
         $mockChart1
             ->expects( $this->any() )
@@ -70,9 +81,14 @@ class ChartTest extends PHPUnit_Framework_TestCase
             ->method ( 'getLibrary' )
             ->will   ( $this->returnValue( \Altamira\JsWriter\JqPlot::LIBRARY ) )
         ;
-        $cssPath = 'css/jquery.jqplot.css';
+        $mockChart3
+            ->expects( $this->any() )
+            ->method ( 'getLibrary' )
+            ->will   ( $this->returnValue( \Altamira\JsWriter\D3::LIBRARY ) )
+        ;
+        $cssPaths = array( 'css/jquery.jqplot.css', 'js/nvd3/src/nv.d3.css' );
         
-        $mockCharts = array( $mockChart1, $mockChart2 );
+        $mockCharts = array( $mockChart1, $mockChart2, $mockChart3 );
         
         $chartIterator = new \Altamira\ChartIterator( $mockCharts );
         
@@ -98,22 +114,27 @@ class ChartTest extends PHPUnit_Framework_TestCase
         
         $this->assertEquals(
                 array( \Altamira\JsWriter\Flot::LIBRARY   => true, 
-                       \Altamira\JsWriter\JqPlot::LIBRARY => true ),
+                       \Altamira\JsWriter\JqPlot::LIBRARY => true,
+                        \Altamira\JsWriter\D3::LIBRARY => true ),
                 $libraries->getValue( $chartIterator ),
                 '\Altamira\ChartIterator should unique-keyed hash table of all libraries used by all charts'
         );
         
-        $expectedOutputString = "<link rel='stylesheet' type='text/css' href='{$cssPath}'></link>";
+        $expectedOutputString = "<link rel='stylesheet' type='text/css' href='{$cssPaths[0]}'></link>";
+        $expectedOutputString .= "<link rel='stylesheet' type='text/css' href='{$cssPaths[1]}'></link>";
         $expectedOutputString .= "<script type='text/javascript' src='jquery.flot.js'></script>";
         $expectedOutputString .= "<script type='text/javascript' src='jquery.jqplot.js'></script>";
+        $expectedOutputString .= "<script type='text/javascript' src='js/nvd3/nv.d3.js'></script>";
         
         $expectedOutputString .= <<<ENDSTRING
 <script type="text/javascript" src="file1a.js"></script>
 <script type="text/javascript" src="file1b.js"></script>
 <script type="text/javascript" src="file2a.js"></script>
 <script type="text/javascript" src="file2b.js"></script>
+<script type="text/javascript" src="file3a.js"></script>
+<script type="text/javascript" src="file3b.js"></script>
 <script type='text/javascript'>
-(function(alert("hey");))();(function(alert("ho");))();
+(function(alert("hey");))();(function(alert("ho");))();(function(alert("lets go");))();
 </script>
 
 ENDSTRING;
@@ -132,8 +153,8 @@ ENDSTRING;
         );
         
         $this->assertEquals(
-                $cssPath,
-                $chartIterator->getCSSPath()
+                $cssPaths,
+                $chartIterator->getCSSPaths()
         );
 
         $this->assertEquals(
@@ -155,7 +176,7 @@ ENDSTRING;
         
         $chartIterator2 =  new \Altamira\ChartIterator( $mockCharts );
         $this->assertEquals(
-                "<script type='text/javascript'>\n(function(alert(\"hey\");))();\n</script>\n<script type='text/javascript'>\n(function(alert(\"ho\");))();\n</script>\n",
+                "<script type='text/javascript'>\n(function(alert(\"hey\");))();\n</script>\n<script type='text/javascript'>\n(function(alert(\"ho\");))();\n</script>\n<script type='text/javascript'>\n(function(alert(\"lets go\");))();\n</script>\n",
                 $chartIterator2->getScripts()
         );
     }

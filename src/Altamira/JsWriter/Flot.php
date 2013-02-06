@@ -605,7 +605,7 @@ class Flot
             foreach ($ticks as $tick) {
                 if (!(ctype_digit($tick) || is_int($tick))) {
                     $isString = true;
-                    // this is O(2N) so deal with it
+                    // this is O(N^2) so deal with it
                     foreach ( $ticks as $tick ) {
                         $alternateTicks[] = array($cnt++, $tick);
                     }

@@ -153,4 +153,15 @@ abstract class TypeAbstract
 	    
 	    return $this;
 	}
+	
+	/**
+	 * returns the name of this instance
+	 * @return string
+	 */
+	public function getName()
+	{
+	    $classname =  get_class( $this );
+	    $exploded = explode( '\\', $classname );
+	    return array_pop( $exploded );
+	}
 }
